@@ -45,21 +45,26 @@
     </script>
 
     <style>
-        body { margin: 0; background-color: #050505; color: white; overflow-x: hidden; }
-        #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+        body { margin: 0; background-color: #050505; color: white; overflow-x: hidden; width: 100%; }
+        #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
         .hud-panel {
-            background: rgba(10, 10, 12, 0.6);
-            backdrop-filter: blur(10px);
+            background: rgba(10, 10, 12, 0.7);
+            backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.08);
             transition: all 0.3s ease;
         }
         .hud-panel:hover {
             border-color: rgba(0, 243, 255, 0.5);
-            background: rgba(10, 10, 12, 0.8);
+            background: rgba(15, 15, 20, 0.9);
         }
         .neon-text { text-shadow: 0 0 10px rgba(0, 255, 65, 0.5); }
         .neon-blue { text-shadow: 0 0 10px rgba(0, 243, 255, 0.5); }
-        .neon-aws { text-shadow: 0 0 10px rgba(255, 153, 0, 0.5); }
+        
+        /* Mobile specific adjustments */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.8rem; line-height: 1.1; }
+        }
+
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: #000; }
         ::-webkit-scrollbar-thumb { background: #333; }
@@ -72,7 +77,6 @@
     <div id="root" class="relative z-10"></div>
 
     <script>
-        // THREE.JS BACKGROUND INITIALIZATION
         const init3D = () => {
             const container = document.getElementById('canvas-container');
             const scene = new THREE.Scene();
@@ -84,7 +88,7 @@
 
             const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Limit pixel ratio for performance
             container.appendChild(renderer.domElement);
 
             const composer = new THREE.EffectComposer(renderer);
@@ -98,7 +102,7 @@
             scene.add(gridHelper);
 
             const snakeSegments = [];
-            const numSegments = 20;
+            const numSegments = window.innerWidth < 768 ? 10 : 20; // Fewer segments on mobile
             const head = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 0x00ff41, wireframe: true }));
             scene.add(head);
             snakeSegments.push(head);
@@ -110,9 +114,27 @@
             }
 
             const mouse = new THREE.Vector2();
-            window.addEventListener('mousemove', (e) => {
+            const onMouseMove = (e) => {
                 mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
                 mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+            };
+
+            const onTouchMove = (e) => {
+                if (e.touches.length > 0) {
+                    mouse.x = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
+                    mouse.y = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
+                }
+            };
+
+            window.addEventListener('mousemove', onMouseMove);
+            window.addEventListener('touchmove', onTouchMove);
+
+            // Handle Resize
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                composer.setSize(window.innerWidth, window.innerHeight);
             });
 
             const animate = () => {
@@ -148,21 +170,20 @@
                 phone: "+1 (561) 987-1160"
             },
             skills: [
-                { name: "Java / Backend Development", level: 80, color: "bg-backend" },
-                { name: "Python / Automation & AI", level: 95, color: "bg-python" },
+                { name: "Java / Backend", level: 80, color: "bg-backend" },
+                { name: "Python / AI", level: 95, color: "bg-python" },
                 { name: "JavaScript / ES6+", level: 85, color: "bg-react" },
-                { name: "React.js / Frontend UI", level: 82, color: "bg-react" },
-                { name: "HTML5 / CSS3 (Modern UI)", level: 90, color: "bg-white" },
-                { name: "REST APIs / Integration", level: 85, color: "bg-backend" },
+                { name: "React.js / Frontend", level: 82, color: "bg-react" },
+                { name: "HTML5 / CSS3", level: 90, color: "bg-white" },
+                { name: "REST APIs", level: 85, color: "bg-backend" },
                 { name: "SQL & Databases", level: 80, color: "bg-blue-500" },
                 { name: "Git / Version Control", level: 85, color: "bg-gray-400" },
-                { name: "CI/CD & DevOps Basics", level: 75, color: "bg-orange-600" },
                 { name: "Cloud (AWS Certified)", level: 92, color: "bg-aws" }
             ],
             certification: {
                 title: "AWS Certified Solutions Architect - Associate",
-                issueDate: "November 9, 2024",
-                expiryDate: "November 9, 2027",
+                issueDate: "Nov 9, 2024",
+                expiryDate: "Nov 9, 2027",
                 validationNum: "7ac7dce5e21c477cb6f1ddc19ae8ea9f",
                 link: "https://aws.amazon.com/verification"
             },
@@ -177,7 +198,7 @@
                     name: "AURA AI BOT",
                     url: "https://auraaibot.netlify.app/",
                     desc: "High-end neural image and interaction bot with futuristic interface logic.",
-                    tags: ["Neural Tech", "Generative AI", "Three.js", "API Integration"]
+                    tags: ["Neural Tech", "Generative AI", "Three.js"]
                 }
             ],
             experience: [
@@ -192,31 +213,15 @@
                     date: "May 2025 – May 2025",
                     role: "Research Assistant",
                     company: "Texas A&M Kingsville",
-                    desc: "Assisted in building the frontend of an e-commerce platform.",
+                    desc: "Assisted in building the frontend of an e-commerce platform and optimizing cloud resources.",
                     tags: ["AWS", "JavaScript", "Vue.js", "Firebase"]
                 },
-
                 {
                    date: "April 2022 – Dec 2023",
                    role: "Software Developer",
                    company: "Nex Gen Solutions",
-                   desc: "Worked on the development and maintenance of web applications by implementing backend logic in Java, managing data using MySQL, and building interactive frontend features with JavaScript and Vue.js, while using Firebase for authentication and basic cloud integration.",
+                   desc: "Implemented backend logic in Java and managed data using MySQL for scalable web applications.",
                    tags: ["Java", "MySQL", "JavaScript", "Vue.js", "Firebase"]
-                }
-   
-            ],
-            education: [
-                {
-                    date: "2019 – 2023",
-                    degree: "Bachelor of Science in Computer Science",
-                    school: "ANITS, Vizag, India",
-                    desc: "Focused on software engineering and algorithms. Graduated with honors."
-                },
-                {
-                    date: "2024 – 2025",
-                    degree: "Master's in Computer Science",
-                    school: "Texas A&M Kingsville, Texas, USA",
-                    desc: "Specializing in advanced software systems and cloud architecture."
                 }
             ]
         };
@@ -229,40 +234,38 @@
         };
 
         const Navbar = () => (
-            <nav className="fixed top-0 w-full p-6 flex justify-between items-center z-50 border-b border-white/10 backdrop-blur-md bg-black/20">
-                <div className="text-xl font-bold tracking-widest text-python flex items-center gap-2 neon-text">
-                    <Icon name="terminal" className="w-6 h-6" /> VS.KALURI
+            <nav className="fixed top-0 w-full p-4 md:p-6 flex justify-between items-center z-50 border-b border-white/10 backdrop-blur-md bg-black/20">
+                <div className="text-lg md:text-xl font-bold tracking-widest text-python flex items-center gap-2 neon-text">
+                    <Icon name="terminal" className="w-5 h-5 md:w-6 md:h-6" /> <span className="hidden xs:inline">VS.KALURI</span>
                 </div>
-                <div className="flex gap-6 text-xs font-mono tracking-widest text-gray-400 hidden md:flex">
-                    <a href="#skills" className="hover:text-white transition">STACK</a>
-                    <a href="#certifications" className="hover:text-white transition">CERTS</a>
-                    <a href="#projects" className="hover:text-white transition">PROJECTS</a>
-                    <a href="#experience" className="hover:text-white transition">EXPERIENCE</a>
+                <div className="flex gap-4 md:gap-6 text-[10px] md:text-xs font-mono tracking-widest text-gray-400">
+                    <a href="#skills" className="hover:text-white transition hidden sm:block">STACK</a>
+                    <a href="#projects" className="hover:text-white transition hidden sm:block">PROJECTS</a>
+                    <a href={USER.links.github} target="_blank" className="px-3 py-1.5 border border-python text-python hover:bg-python hover:text-black transition-all text-[10px] md:text-sm font-mono font-bold">
+                        GITHUB
+                    </a>
                 </div>
-                <a href={USER.links.github} target="_blank" className="px-4 py-2 border border-python text-python hover:bg-python hover:text-black transition-all text-sm font-mono font-bold">
-                    GITHUB_INIT
-                </a>
             </nav>
         );
 
         const Hero = () => (
-            <section className="h-screen flex flex-col justify-center px-6 md:px-32 relative pt-20">
+            <section className="min-h-screen flex flex-col justify-center px-6 md:px-32 relative pt-20">
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-                    <div className="inline-block px-3 py-1 border border-react text-react text-xs font-mono mb-4 tracking-[0.2em]">
+                    <div className="inline-block px-3 py-1 border border-react text-react text-[10px] font-mono mb-4 tracking-[0.2em]">
                         SYSTEM_ONLINE
                     </div>
-                    <h1 className="text-5xl md:text-8xl font-black leading-none mb-6">
+                    <h1 className="hero-title text-4xl md:text-7xl lg:text-8xl font-black leading-none mb-6">
                         VENKATA <br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-python to-react neon-text">
-                            SURYA TEJA KALURI
+                            SURYA TEJA
                         </span>
                     </h1>
-                    <div className="flex items-center gap-4 text-gray-400 font-mono text-sm md:text-lg mb-8">
+                    <div className="flex items-center gap-3 text-gray-400 font-mono text-xs md:text-lg mb-8">
                         <span className="text-backend">//</span> SOFTWARE DEVELOPER 
                     </div>
-                    <div className="flex gap-4">
-                        <a href="#contact" className="hud-panel px-8 py-4 text-white hover:border-react hover:text-react transition-all flex items-center gap-3">
-                            <Icon name="mail" className="w-5 h-5"/> CONTACT_ME
+                    <div className="flex flex-wrap gap-4">
+                        <a href="#contact" className="hud-panel px-6 py-3 md:px-8 md:py-4 text-white text-xs md:text-base hover:border-react hover:text-react transition-all flex items-center gap-3">
+                            <Icon name="mail" className="w-4 h-4 md:w-5 md:h-5"/> CONTACT_ME
                         </a>
                     </div>
                 </motion.div>
@@ -271,7 +274,7 @@
 
         const SkillBar = ({ skill }) => (
             <div className="mb-4">
-                <div className="flex justify-between text-[10px] font-mono mb-1 uppercase tracking-tighter">
+                <div className="flex justify-between text-[9px] md:text-[10px] font-mono mb-1 uppercase tracking-tighter">
                     <span className="text-gray-300">{skill.name}</span>
                     <span className="text-python">{skill.level}%</span>
                 </div>
@@ -283,40 +286,26 @@
 
         const Certifications = () => (
             <section id="certifications" className="py-12 px-6 md:px-32">
-                <h2 className="text-3xl font-bold mb-8 flex items-center gap-3">
-                    <Icon name="award" className="text-aws" /> VERIFIED_CREDENTIALS
+                <h2 className="text-2xl md:text-3xl font-bold mb-8 flex items-center gap-3">
+                    <Icon name="award" className="text-aws" /> CREDENTIALS
                 </h2>
-                <motion.div 
-                    whileHover={{ scale: 1.01 }}
-                    className="hud-panel p-8 rounded-xl border-t-4 border-t-aws relative overflow-hidden group"
-                >
-                    <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition">
-                        <Icon name="cloud" className="w-32 h-32 text-aws" />
-                    </div>
-                    <div className="relative z-10 grid md:grid-cols-2 gap-8 items-center">
+                <motion.div whileHover={{ scale: 1.005 }} className="hud-panel p-6 md:p-8 rounded-xl border-t-4 border-t-aws relative overflow-hidden group">
+                    <div className="relative z-10 grid lg:grid-cols-2 gap-8 items-center">
                         <div>
-                            <span className="text-aws font-mono text-xs tracking-widest uppercase">Amazon Web Services</span>
-                            <h3 className="text-3xl font-black mt-2 mb-4 tracking-tighter">{USER.certification.title}</h3>
-                            <div className="space-y-2 text-sm font-mono text-gray-400 mb-6">
+                            <span className="text-aws font-mono text-[10px] tracking-widest uppercase">Amazon Web Services</span>
+                            <h3 className="text-xl md:text-3xl font-black mt-2 mb-4 tracking-tighter">{USER.certification.title}</h3>
+                            <div className="space-y-2 text-[10px] md:text-sm font-mono text-gray-400 mb-6">
                                 <div className="flex gap-2"> <span className="text-aws">ID:</span> {USER.certification.validationNum} </div>
                                 <div className="flex gap-2"> <span className="text-aws">ISSUED:</span> {USER.certification.issueDate} </div>
-                                <div className="flex gap-2"> <span className="text-aws">EXPIRES:</span> {USER.certification.expiryDate} </div>
                             </div>
-                            <a href={USER.certification.link} target="_blank" className="px-6 py-3 bg-aws/20 border border-aws text-aws text-xs font-bold hover:bg-aws hover:text-black transition-all inline-flex items-center gap-2">
-                                <Icon name="external-link" className="w-4 h-4" /> VALIDATE_ON_AWS
+                            <a href={USER.certification.link} target="_blank" className="px-4 py-2 bg-aws/10 border border-aws text-aws text-[10px] font-bold hover:bg-aws hover:text-black transition-all inline-flex items-center gap-2">
+                                <Icon name="external-link" className="w-4 h-4" /> VERIFY
                             </a>
                         </div>
-                        <div className="flex justify-center">
-                            {/* In a real project, replace 'certificate-image.png' with your actual image path */}
-                            <div className="w-full max-w-sm border border-white/10 rounded-lg overflow-hidden shadow-2xl shadow-aws/20 bg-dark/50 p-4">
-                                <div className="aspect-[4/3] bg-gray-900 flex flex-col items-center justify-center border border-dashed border-aws/30 relative">
-                                    <Icon name="shield-check" className="w-16 h-16 text-aws mb-4" />
-                                    <div className="text-center px-4">
-                                        <div className="text-[10px] text-gray-500 font-mono mb-1 uppercase tracking-widest">Digital Badge Record</div>
-                                        <div className="text-xs font-bold text-white">Solutions Architect - Associate</div>
-                                    </div>
-                                    <div className="absolute bottom-2 right-2 opacity-50 text-[8px] font-mono">ENCRYPTED_VERIFICATION</div>
-                                </div>
+                        <div className="hidden lg:flex justify-end">
+                            <div className="w-64 h-40 border border-aws/30 rounded bg-black/40 flex flex-col items-center justify-center p-4">
+                                <Icon name="cloud" className="text-aws w-12 h-12 mb-2" />
+                                <div className="text-[10px] font-mono text-gray-500 uppercase">Solutions Architect</div>
                             </div>
                         </div>
                     </div>
@@ -325,20 +314,20 @@
         );
 
         const Projects = () => (
-            <section id="projects" className="py-24 px-6 md:px-32">
-                <h2 className="text-3xl font-bold mb-12 flex items-center gap-3">
+            <section id="projects" className="py-12 md:py-24 px-6 md:px-32">
+                <h2 className="text-2xl md:text-3xl font-bold mb-12 flex items-center gap-3">
                     <Icon name="layers" className="text-python" /> CORE_PROJECTS
                 </h2>
-                <div className="grid md:grid-cols-2 gap-8">
+                <div className="grid md:grid-cols-2 gap-6 md:gap-8">
                     {USER.projects.map((proj, i) => (
-                        <motion.div key={i} whileHover={{ y: -5 }} className="hud-panel p-8 rounded-xl border-l-4 border-l-python">
-                            <h3 className="text-2xl font-bold mb-4 tracking-tighter">{proj.name}</h3>
-                            <p className="text-gray-400 text-sm mb-6 font-sans h-12">{proj.desc}</p>
+                        <motion.div key={i} whileHover={{ y: -5 }} className="hud-panel p-6 md:p-8 rounded-xl border-l-4 border-l-python">
+                            <h3 className="text-xl md:text-2xl font-bold mb-4 tracking-tighter">{proj.name}</h3>
+                            <p className="text-gray-400 text-xs md:text-sm mb-6 font-sans leading-relaxed">{proj.desc}</p>
                             <div className="flex flex-wrap gap-2 mb-8">
-                                {proj.tags.map(tag => <span key={tag} className="text-[10px] bg-white/5 px-2 py-1 text-python font-mono">{tag}</span>)}
+                                {proj.tags.map(tag => <span key={tag} className="text-[9px] bg-white/5 px-2 py-1 text-python font-mono">{tag}</span>)}
                             </div>
-                            <a href={proj.url} target="_blank" className="text-xs font-mono text-react flex items-center gap-2 hover:gap-4 transition-all">
-                                ACCESS_INTERFACE <Icon name="external-link" className="w-4 h-4" />
+                            <a href={proj.url} target="_blank" className="text-[10px] font-mono text-react flex items-center gap-2 hover:gap-4 transition-all">
+                                VIEW_PROJECT <Icon name="external-link" className="w-3 h-3" />
                             </a>
                         </motion.div>
                     ))}
@@ -347,26 +336,26 @@
         );
 
         const Contact = () => (
-            <section id="contact" className="py-24 px-6 md:px-32 bg-gradient-to-b from-transparent to-python/5">
-                <div className="hud-panel p-12 rounded-3xl border-t-4 border-t-react text-center">
-                    <h2 className="text-4xl font-black mb-4 neon-blue">ESTABLISH_CONNECTION</h2>
-                    <p className="text-gray-400 font-mono text-sm mb-12 uppercase tracking-widest">Available for Entry-Level software development roles</p>
+            <section id="contact" className="py-12 md:py-24 px-6 md:px-32">
+                <div className="hud-panel p-8 md:p-12 rounded-3xl border-t-4 border-t-react text-center">
+                    <h2 className="text-2xl md:text-4xl font-black mb-4 neon-blue">ESTABLISH_CONNECTION</h2>
+                    <p className="text-gray-400 font-mono text-[10px] md:text-sm mb-12 uppercase tracking-widest">Available for Entry-Level software development roles</p>
                     
-                    <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-                        <a href={`mailto:${USER.links.email}`} className="p-6 border border-white/10 hover:border-python transition group">
-                            <Icon name="mail" className="w-8 h-8 mx-auto mb-4 text-python group-hover:scale-110 transition" />
-                            <div className="text-xs font-mono text-gray-500 mb-1">EMAIL</div>
-                            <div className="text-sm font-bold truncate">{USER.links.email}</div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                        <a href={`mailto:${USER.links.email}`} className="p-4 md:p-6 border border-white/10 hover:border-python transition group rounded-xl">
+                            <Icon name="mail" className="w-6 h-6 mx-auto mb-3 text-python group-hover:scale-110 transition" />
+                            <div className="text-[10px] font-mono text-gray-500 mb-1">EMAIL</div>
+                            <div className="text-xs font-bold truncate">{USER.links.email}</div>
                         </a>
-                        <a href={`tel:${USER.links.phone}`} className="p-6 border border-white/10 hover:border-react transition group">
-                            <Icon name="phone" className="w-8 h-8 mx-auto mb-4 text-react group-hover:scale-110 transition" />
-                            <div className="text-xs font-mono text-gray-500 mb-1">PHONE NUMBER</div>
-                            <div className="text-sm font-bold">{USER.links.phone}</div>
+                        <a href={`tel:${USER.links.phone}`} className="p-4 md:p-6 border border-white/10 hover:border-react transition group rounded-xl">
+                            <Icon name="phone" className="w-6 h-6 mx-auto mb-3 text-react group-hover:scale-110 transition" />
+                            <div className="text-[10px] font-mono text-gray-500 mb-1">PHONE</div>
+                            <div className="text-xs font-bold">{USER.links.phone}</div>
                         </a>
-                        <div className="p-6 border border-white/10 hover:border-backend transition group">
-                            <Icon name="map-pin" className="w-8 h-8 mx-auto mb-4 text-backend group-hover:scale-110 transition" />
-                            <div className="text-xs font-mono text-gray-500 mb-1">LOCATION</div>
-                            <div className="text-sm font-bold">TEXAS, USA</div>
+                        <div className="p-4 md:p-6 border border-white/10 hover:border-backend transition group rounded-xl">
+                            <Icon name="map-pin" className="w-6 h-6 mx-auto mb-3 text-backend group-hover:scale-110 transition" />
+                            <div className="text-[10px] font-mono text-gray-500 mb-1">LOCATION</div>
+                            <div className="text-xs font-bold uppercase">Texas, USA</div>
                         </div>
                     </div>
                 </div>
@@ -378,37 +367,36 @@
                 <Navbar />
                 <Hero />
                 
-                <section id="skills" className="py-24 px-6 md:px-32">
-                    <div className="grid md:grid-cols-2 gap-16">
+                <section id="skills" className="py-12 md:py-24 px-6 md:px-32">
+                    <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
                         <div>
-                            <h2 className="text-3xl font-bold mb-8 flex items-center gap-3">
+                            <h2 className="text-2xl md:text-3xl font-bold mb-8 flex items-center gap-3">
                                 <Icon name="cpu" className="text-react" /> TECHNICAL_STACK
                             </h2>
-                            <p className="text-gray-400 leading-relaxed mb-8 border-l-2 border-python pl-6 font-sans">
-                                Professional software developer with 2+ years of experience across the full lifecycle of application development. 
-                                Expert in building robust backend services and interactive frontend interfaces.
+                            <p className="text-gray-400 text-sm md:text-base leading-relaxed mb-8 border-l-2 border-python pl-6 font-sans">
+                                Software developer with experience across the full lifecycle of application development. 
+                                Specializing in building robust backend services and interactive frontend interfaces.
                             </p>
                         </div>
-                        <div className="hud-panel p-8 rounded-xl grid grid-cols-1 md:grid-cols-2 gap-x-8">
+                        <div className="hud-panel p-6 md:p-8 rounded-xl grid grid-cols-1 sm:grid-cols-2 gap-x-8">
                             {USER.skills.map((skill, i) => <SkillBar key={i} skill={skill} />)}
                         </div>
                     </div>
                 </section>
 
                 <Certifications />
-
                 <Projects />
 
-                <section id="experience" className="py-24 px-6 md:px-32">
-                    <h2 className="text-3xl font-bold mb-12 text-center neon-blue">WORK_HISTORY</h2>
-                    <div className="space-y-8">
+                <section id="experience" className="py-12 md:py-24 px-6 md:px-32">
+                    <h2 className="text-2xl md:text-3xl font-bold mb-12 text-center neon-blue">WORK_HISTORY</h2>
+                    <div className="max-w-4xl mx-auto space-y-6 md:space-y-8">
                         {USER.experience.map((exp, i) => (
-                            <motion.div key={i} className="hud-panel p-8 rounded-lg">
-                                <h3 className="text-xl font-bold text-white">{exp.role} @ <span className="text-python">{exp.company}</span></h3>
-                                <p className="text-xs text-react mb-4 font-mono">{exp.date}</p>
-                                <p className="text-gray-400 mb-4">{exp.desc}</p>
+                            <motion.div key={i} className="hud-panel p-6 md:p-8 rounded-lg border-l-2 border-white/10">
+                                <h3 className="text-lg md:text-xl font-bold text-white leading-tight">{exp.role} @ <span className="text-python">{exp.company}</span></h3>
+                                <p className="text-[10px] text-react mb-4 font-mono uppercase tracking-widest">{exp.date}</p>
+                                <p className="text-gray-400 text-sm mb-4 leading-relaxed">{exp.desc}</p>
                                 <div className="flex flex-wrap gap-2">
-                                    {exp.tags.map(tag => <span key={tag} className="text-[10px] border border-white/20 px-2 py-1 text-gray-500">{tag}</span>)}
+                                    {exp.tags.map(tag => <span key={tag} className="text-[9px] border border-white/20 px-2 py-1 text-gray-400 font-mono">{tag}</span>)}
                                 </div>
                             </motion.div>
                         ))}
@@ -417,12 +405,12 @@
 
                 <Contact />
 
-                <footer className="py-12 border-t border-white/10 bg-black text-center">
+                <footer className="py-12 border-t border-white/10 bg-black/80 text-center">
                     <div className="flex justify-center gap-8 mb-8">
-                        <a href={USER.links.github} className="hover:text-python transition"><Icon name="github" /></a>
-                        <a href={USER.links.linkedin} className="hover:text-react transition"><Icon name="linkedin" /></a>
+                        <a href={USER.links.github} className="text-gray-400 hover:text-python transition"><Icon name="github" className="w-5 h-5" /></a>
+                        <a href={USER.links.linkedin} className="text-gray-400 hover:text-react transition"><Icon name="linkedin" className="w-5 h-5" /></a>
                     </div>
-                    <p className="text-gray-600 font-mono text-xs">© 2024 {USER.name} // SECURE_ACCESS_GRANTED</p>
+                    <p className="text-gray-600 font-mono text-[9px] md:text-xs px-4 uppercase tracking-[0.3em]">© 2024 {USER.name} // SECURE_ACCESS_GRANTED</p>
                 </footer>
             </div>
         );
