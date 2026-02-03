@@ -20,9 +20,6 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -39,6 +36,7 @@
                         python: '#00ff41',
                         react: '#00f3ff',
                         backend: '#bd00ff',
+                        aws: '#FF9900',
                         dark: '#050505'
                     }
                 }
@@ -53,9 +51,15 @@
             background: rgba(10, 10, 12, 0.6);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+        }
+        .hud-panel:hover {
+            border-color: rgba(0, 243, 255, 0.5);
+            background: rgba(10, 10, 12, 0.8);
         }
         .neon-text { text-shadow: 0 0 10px rgba(0, 255, 65, 0.5); }
         .neon-blue { text-shadow: 0 0 10px rgba(0, 243, 255, 0.5); }
+        .neon-aws { text-shadow: 0 0 10px rgba(255, 153, 0, 0.5); }
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: #000; }
         ::-webkit-scrollbar-thumb { background: #333; }
@@ -132,7 +136,6 @@
 
     <script type="text/babel">
         const { useState, useEffect } = React;
-        // Correct way to access Framer Motion from UMD script
         const motion = window.Motion.motion;
 
         const USER = {
@@ -141,14 +144,41 @@
             links: {
                 github: "https://github.com/venkatakaluri",
                 linkedin: "https://www.linkedin.com/in/venkata-surya-teja-kaluri",
-                email: "mailto:venkatasuryatejak28@gmail.com",
-                phone: "tel:+1 (561) 987-1160"
+                email: "venkatasuryatejak28@gmail.com",
+                phone: "+1 (561) 987-1160"
             },
             skills: [
-                { name: "Python", level: 95, color: "bg-python" },
-                { name: "React / JS", level: 90, color: "bg-react" },
-                { name: "Backend / API", level: 85, color: "bg-backend" },
-                { name: "Cloud / DevOps", level: 80, color: "bg-white" }
+                { name: "Java / Backend Development", level: 80, color: "bg-backend" },
+                { name: "Python / Automation & AI", level: 95, color: "bg-python" },
+                { name: "JavaScript / ES6+", level: 85, color: "bg-react" },
+                { name: "React.js / Frontend UI", level: 82, color: "bg-react" },
+                { name: "HTML5 / CSS3 (Modern UI)", level: 90, color: "bg-white" },
+                { name: "REST APIs / Integration", level: 85, color: "bg-backend" },
+                { name: "SQL & Databases", level: 80, color: "bg-blue-500" },
+                { name: "Git / Version Control", level: 85, color: "bg-gray-400" },
+                { name: "CI/CD & DevOps Basics", level: 75, color: "bg-orange-600" },
+                { name: "Cloud (AWS Certified)", level: 92, color: "bg-aws" }
+            ],
+            certification: {
+                title: "AWS Certified Solutions Architect - Associate",
+                issueDate: "November 9, 2024",
+                expiryDate: "November 9, 2027",
+                validationNum: "7ac7dce5e21c477cb6f1ddc19ae8ea9f",
+                link: "https://aws.amazon.com/verification"
+            },
+            projects: [
+                {
+                    name: "MYBOT.AI",
+                    url: "https://mybot.ai/",
+                    desc: "Advanced AI conversational platform designed for intelligent automated interactions.",
+                    tags: ["AI", "NLP", "React", "Node.js"]
+                },
+                {
+                    name: "AURA AI BOT",
+                    url: "https://auraaibot.netlify.app/",
+                    desc: "High-end neural image and interaction bot with futuristic interface logic.",
+                    tags: ["Neural Tech", "Generative AI", "Three.js", "API Integration"]
+                }
             ],
             experience: [
                 {
@@ -164,13 +194,6 @@
                     company: "Texas A&M Kingsville",
                     desc: "Assisted in building the frontend of an e-commerce platform.",
                     tags: ["AWS", "JavaScript", "Vue.js", "Firebase"]
-                },
-                {
-                    date: "April 2022 – Dec 2023",
-                    role: "Software Developer",
-                    company: "Next Gen Solutions",
-                    desc: "Built and maintained RESTful APIs serving 50K+ daily users.",
-                    tags: ["Python", "C++", "sql", "AWS", "Django", "PostgreSQL"] // Fixed missing comma here
                 }
             ],
             education: [
@@ -178,12 +201,12 @@
                     date: "2019 – 2023",
                     degree: "Bachelor of Science in Computer Science",
                     school: "ANITS, Vizag, India",
-                    desc: "Focused on software engineering, algorithms, and data structures. Graduated with honors."
+                    desc: "Focused on software engineering and algorithms. Graduated with honors."
                 },
                 {
-                    date: "2024– 2025",
+                    date: "2024 – 2025",
                     degree: "Master's in Computer Science",
-                    school: "Texas A&M Kingsville, Texas, United States",
+                    school: "Texas A&M Kingsville, Texas, USA",
                     desc: "Specializing in advanced software systems and cloud architecture."
                 }
             ]
@@ -203,8 +226,9 @@
                 </div>
                 <div className="flex gap-6 text-xs font-mono tracking-widest text-gray-400 hidden md:flex">
                     <a href="#skills" className="hover:text-white transition">STACK</a>
+                    <a href="#certifications" className="hover:text-white transition">CERTS</a>
+                    <a href="#projects" className="hover:text-white transition">PROJECTS</a>
                     <a href="#experience" className="hover:text-white transition">EXPERIENCE</a>
-                    <a href="#education" className="hover:text-white transition">EDUCATION</a>
                 </div>
                 <a href={USER.links.github} target="_blank" className="px-4 py-2 border border-python text-python hover:bg-python hover:text-black transition-all text-sm font-mono font-bold">
                     GITHUB_INIT
@@ -225,32 +249,119 @@
                         </span>
                     </h1>
                     <div className="flex items-center gap-4 text-gray-400 font-mono text-sm md:text-lg mb-8">
-                        <span className="text-backend">//</span> SOFTWARE DEVELOPER
+                        <span className="text-backend">//</span> SOFTWARE DEVELOPER & AWS ARCHITECT
                     </div>
                     <div className="flex gap-4">
-                        <a href={USER.links.linkedin} target="_blank" className="hud-panel px-8 py-4 text-white hover:border-react hover:text-react transition-all flex items-center gap-3">
-                            <Icon name="linkedin" className="w-5 h-5"/> CONNECT
+                        <a href="#contact" className="hud-panel px-8 py-4 text-white hover:border-react hover:text-react transition-all flex items-center gap-3">
+                            <Icon name="mail" className="w-5 h-5"/> CONTACT_ME
                         </a>
                     </div>
                 </motion.div>
             </section>
         );
 
-        const SkillBar = ({ skill, index }) => (
-            <div className="mb-6">
-                <div className="flex justify-between text-sm font-mono mb-2">
+        const SkillBar = ({ skill }) => (
+            <div className="mb-4">
+                <div className="flex justify-between text-[10px] font-mono mb-1 uppercase tracking-tighter">
                     <span className="text-gray-300">{skill.name}</span>
                     <span className="text-python">{skill.level}%</span>
                 </div>
                 <div className="h-1 w-full bg-gray-800 rounded-full overflow-hidden">
-                    <motion.div 
-                        initial={{ width: 0 }} 
-                        whileInView={{ width: `${skill.level}%` }}
-                        transition={{ duration: 1.5, ease: "easeOut" }}
-                        className={`h-full ${skill.color}`}
-                    />
+                    <motion.div initial={{ width: 0 }} whileInView={{ width: `${skill.level}%` }} transition={{ duration: 1.5 }} className={`h-full ${skill.color}`} />
                 </div>
             </div>
+        );
+
+        const Certifications = () => (
+            <section id="certifications" className="py-12 px-6 md:px-32">
+                <h2 className="text-3xl font-bold mb-8 flex items-center gap-3">
+                    <Icon name="award" className="text-aws" /> VERIFIED_CREDENTIALS
+                </h2>
+                <motion.div 
+                    whileHover={{ scale: 1.01 }}
+                    className="hud-panel p-8 rounded-xl border-t-4 border-t-aws relative overflow-hidden group"
+                >
+                    <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition">
+                        <Icon name="cloud" className="w-32 h-32 text-aws" />
+                    </div>
+                    <div className="relative z-10 grid md:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <span className="text-aws font-mono text-xs tracking-widest uppercase">Amazon Web Services</span>
+                            <h3 className="text-3xl font-black mt-2 mb-4 tracking-tighter">{USER.certification.title}</h3>
+                            <div className="space-y-2 text-sm font-mono text-gray-400 mb-6">
+                                <div className="flex gap-2"> <span className="text-aws">ID:</span> {USER.certification.validationNum} </div>
+                                <div className="flex gap-2"> <span className="text-aws">ISSUED:</span> {USER.certification.issueDate} </div>
+                                <div className="flex gap-2"> <span className="text-aws">EXPIRES:</span> {USER.certification.expiryDate} </div>
+                            </div>
+                            <a href={USER.certification.link} target="_blank" className="px-6 py-3 bg-aws/20 border border-aws text-aws text-xs font-bold hover:bg-aws hover:text-black transition-all inline-flex items-center gap-2">
+                                <Icon name="external-link" className="w-4 h-4" /> VALIDATE_ON_AWS
+                            </a>
+                        </div>
+                        <div className="flex justify-center">
+                            {/* In a real project, replace 'certificate-image.png' with your actual image path */}
+                            <div className="w-full max-w-sm border border-white/10 rounded-lg overflow-hidden shadow-2xl shadow-aws/20 bg-dark/50 p-4">
+                                <div className="aspect-[4/3] bg-gray-900 flex flex-col items-center justify-center border border-dashed border-aws/30 relative">
+                                    <Icon name="shield-check" className="w-16 h-16 text-aws mb-4" />
+                                    <div className="text-center px-4">
+                                        <div className="text-[10px] text-gray-500 font-mono mb-1 uppercase tracking-widest">Digital Badge Record</div>
+                                        <div className="text-xs font-bold text-white">Solutions Architect - Associate</div>
+                                    </div>
+                                    <div className="absolute bottom-2 right-2 opacity-50 text-[8px] font-mono">ENCRYPTED_VERIFICATION</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
+            </section>
+        );
+
+        const Projects = () => (
+            <section id="projects" className="py-24 px-6 md:px-32">
+                <h2 className="text-3xl font-bold mb-12 flex items-center gap-3">
+                    <Icon name="layers" className="text-python" /> CORE_PROJECTS
+                </h2>
+                <div className="grid md:grid-cols-2 gap-8">
+                    {USER.projects.map((proj, i) => (
+                        <motion.div key={i} whileHover={{ y: -5 }} className="hud-panel p-8 rounded-xl border-l-4 border-l-python">
+                            <h3 className="text-2xl font-bold mb-4 tracking-tighter">{proj.name}</h3>
+                            <p className="text-gray-400 text-sm mb-6 font-sans h-12">{proj.desc}</p>
+                            <div className="flex flex-wrap gap-2 mb-8">
+                                {proj.tags.map(tag => <span key={tag} className="text-[10px] bg-white/5 px-2 py-1 text-python font-mono">{tag}</span>)}
+                            </div>
+                            <a href={proj.url} target="_blank" className="text-xs font-mono text-react flex items-center gap-2 hover:gap-4 transition-all">
+                                ACCESS_INTERFACE <Icon name="external-link" className="w-4 h-4" />
+                            </a>
+                        </motion.div>
+                    ))}
+                </div>
+            </section>
+        );
+
+        const Contact = () => (
+            <section id="contact" className="py-24 px-6 md:px-32 bg-gradient-to-b from-transparent to-python/5">
+                <div className="hud-panel p-12 rounded-3xl border-t-4 border-t-react text-center">
+                    <h2 className="text-4xl font-black mb-4 neon-blue">ESTABLISH_CONNECTION</h2>
+                    <p className="text-gray-400 font-mono text-sm mb-12 uppercase tracking-widest">Available for high-end software development roles</p>
+                    
+                    <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                        <a href={`mailto:${USER.links.email}`} className="p-6 border border-white/10 hover:border-python transition group">
+                            <Icon name="mail" className="w-8 h-8 mx-auto mb-4 text-python group-hover:scale-110 transition" />
+                            <div className="text-xs font-mono text-gray-500 mb-1">EMAIL</div>
+                            <div className="text-sm font-bold truncate">{USER.links.email}</div>
+                        </a>
+                        <a href={`tel:${USER.links.phone}`} className="p-6 border border-white/10 hover:border-react transition group">
+                            <Icon name="phone" className="w-8 h-8 mx-auto mb-4 text-react group-hover:scale-110 transition" />
+                            <div className="text-xs font-mono text-gray-500 mb-1">COMMS</div>
+                            <div className="text-sm font-bold">{USER.links.phone}</div>
+                        </a>
+                        <div className="p-6 border border-white/10 hover:border-backend transition group">
+                            <Icon name="map-pin" className="w-8 h-8 mx-auto mb-4 text-backend group-hover:scale-110 transition" />
+                            <div className="text-xs font-mono text-gray-500 mb-1">LOCATION</div>
+                            <div className="text-sm font-bold">TEXAS, USA</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         );
 
         const App = () => (
@@ -265,16 +376,19 @@
                                 <Icon name="cpu" className="text-react" /> TECHNICAL_STACK
                             </h2>
                             <p className="text-gray-400 leading-relaxed mb-8 border-l-2 border-python pl-6 font-sans">
-                                I am a software developer with 2+ years of experience building full-stack applications using Java,
-                                Python, C/C++, and modern web technologies. I enjoy creating scalable solutions and delivering 
-                                high-quality software.
+                                Professional software developer with 2+ years of experience across the full lifecycle of application development. 
+                                Expert in building robust backend services and interactive frontend interfaces.
                             </p>
                         </div>
-                        <div className="hud-panel p-8 rounded-xl">
-                            {USER.skills.map((skill, i) => <SkillBar key={i} skill={skill} index={i} />)}
+                        <div className="hud-panel p-8 rounded-xl grid grid-cols-1 md:grid-cols-2 gap-x-8">
+                            {USER.skills.map((skill, i) => <SkillBar key={i} skill={skill} />)}
                         </div>
                     </div>
                 </section>
+
+                <Certifications />
+
+                <Projects />
 
                 <section id="experience" className="py-24 px-6 md:px-32">
                     <h2 className="text-3xl font-bold mb-12 text-center neon-blue">WORK_HISTORY</h2>
@@ -292,28 +406,14 @@
                     </div>
                 </section>
 
-                <section id="education" className="py-24 px-6 md:px-32 bg-black/40">
-                    <h2 className="text-3xl font-bold mb-12 flex items-center gap-3">
-                        <Icon name="graduation-cap" className="text-backend" /> EDUCATION_LOGS
-                    </h2>
-                    <div className="grid md:grid-cols-2 gap-8">
-                        {USER.education.map((edu, i) => (
-                            <div key={i} className="hud-panel p-8 border-l-4 border-l-backend">
-                                <h3 className="text-xl font-bold mb-2 uppercase">{edu.degree}</h3>
-                                <p className="text-sm text-gray-300 font-mono mb-4">{edu.school} ({edu.date})</p>
-                                <p className="text-sm text-gray-500 italic">{edu.desc}</p>
-                            </div>
-                        ))}
-                    </div>
-                </section>
+                <Contact />
 
                 <footer className="py-12 border-t border-white/10 bg-black text-center">
                     <div className="flex justify-center gap-8 mb-8">
                         <a href={USER.links.github} className="hover:text-python transition"><Icon name="github" /></a>
                         <a href={USER.links.linkedin} className="hover:text-react transition"><Icon name="linkedin" /></a>
-                        <a href={USER.links.email} className="hover:text-backend transition"><Icon name="mail" /></a>
                     </div>
-                    <p className="text-gray-600 font-mono text-xs">© 2024 {USER.name}</p>
+                    <p className="text-gray-600 font-mono text-xs">© 2024 {USER.name} // SECURE_ACCESS_GRANTED</p>
                 </footer>
             </div>
         );
