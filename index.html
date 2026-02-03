@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Venkata Surya Teja Kaluri | Software Developer</title>
+    
+    <!-- React Core -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Styling & Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    
+    <!-- Three.js (The 3D Engine) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Post Processing for the "Glow" Effect -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Exo 2', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        python: '#00ff41', // Matrix Green
+                        react: '#00f3ff',  // Cyan
+                        backend: '#bd00ff', // Purple
+                        dark: '#050505'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { margin: 0; background-color: #050505; color: white; overflow-x: hidden; }
+        #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+        
+        .hud-panel {
+            background: rgba(10, 10, 12, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        
+        .neon-text { text-shadow: 0 0 10px rgba(0, 255, 65, 0.5); }
+        .neon-blue { text-shadow: 0 0 10px rgba(0, 243, 255, 0.5); }
+        
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; }
+        ::-webkit-scrollbar-thumb:hover { background: #00ff41; }
+
+        .timeline-border {
+            border-left: 2px dashed rgba(0, 243, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="canvas-container"></div>
+    <div id="root" class="relative z-10"></div>
+
+    <script>
+        const init3D = () => {
+            const container = document.getElementById('canvas-container');
+            const scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x050505, 0.02);
+
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 15;
+            camera.position.y = 5;
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.toneMapping = THREE.ReinhardToneMapping;
+            container.appendChild(renderer.domElement);
+
+            const renderScene = new THREE.RenderPass(scene, camera);
+            const bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+            bloomPass.threshold = 0;
+            bloomPass.strength = 1.2;
+            bloomPass.radius = 0;
+
+            const composer = new THREE.EffectComposer(renderer);
+            composer.addPass(renderScene);
+            composer.addPass(bloomPass);
+
+            const gridHelper = new THREE.GridHelper(200, 100, 0x00f3ff, 0x111111);
+            gridHelper.position.y = -5;
+            scene.add(gridHelper);
+
+            const snakeSegments = [];
+            const numSegments = 30;
+            
+            const headGeo = new THREE.BoxGeometry(1.2, 0.8, 1.5);
+            const headMat = new THREE.MeshBasicMaterial({ color: 0x00ff41, wireframe: true });
+            const head = new THREE.Mesh(headGeo, headMat);
+            scene.add(head);
+            snakeSegments.push(head);
+
+            const bodyGeo = new THREE.BoxGeometry(0.8, 0.6, 0.8);
+            const bodyMat = new THREE.MeshBasicMaterial({ color: 0x008f24, wireframe: true });
+
+            for (let i = 0; i < numSegments; i++) {
+                const segment = new THREE.Mesh(bodyGeo, bodyMat);
+                segment.position.x = i;
+                scene.add(segment);
+                snakeSegments.push(segment);
+            }
+
+            const mouse = new THREE.Vector2();
+            const target = new THREE.Vector3();
+            
+            window.addEventListener('mousemove', (event) => {
+                mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            });
+
+            const particlesGeo = new THREE.BufferGeometry();
+            const particleCount = 200;
+            const posArray = new Float32Array(particleCount * 3);
+            for(let i = 0; i < particleCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 50;
+            }
+            particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            const particlesMat = new THREE.PointsMaterial({ size: 0.1, color: 0xbd00ff });
+            const particlesMesh = new THREE.Points(particlesGeo, particlesMat);
+            scene.add(particlesMesh);
+
+            const animate = () => {
+                requestAnimationFrame(animate);
+                const vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+                vector.unproject(camera);
+                const dir = vector.sub(camera.position).normalize();
+                const distance = -camera.position.z / dir.z * 1.5;
+                const pos = camera.position.clone().add(dir.multiplyScalar(distance));
+                
+                target.copy(pos);
+                head.position.lerp(target, 0.1);
+                head.rotation.x += 0.01;
+                head.rotation.y += 0.02;
+
+                for (let i = snakeSegments.length - 1; i > 0; i--) {
+                    snakeSegments[i].position.lerp(snakeSegments[i-1].position, 0.3);
+                    snakeSegments[i].lookAt(snakeSegments[i-1].position);
+                }
+
+                gridHelper.position.z = (Date.now() * 0.002) % 2;
+                particlesMesh.rotation.y += 0.001;
+                composer.render();
+            };
+            animate();
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                composer.setSize(window.innerWidth, window.innerHeight);
+            });
+        };
+        window.addEventListener('load', init3D);
+    </script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { motion } = window.Motion;
+
+        const USER = {
+            name: "VENKATA SURYA TEJA KALURI",
+            tagline: "SOFTWARE DEVELOPER",
+            links: {
+                github: "https://github.com/venkatakaluri",
+                linkedin: "https://www.linkedin.com/in/venkata-surya-teja-kaluri",
+                email: "mailto:venkatasuryatejak28@gmail.com",
+                phone: "tel:+1 (561) 987-1160"
+            },
+            skills: [
+                { name: "Python", level: 95, color: "bg-python" },
+                { name: "React / JS", level: 90, color: "bg-react" },
+                { name: "Backend / API", level: 85, color: "bg-backend" },
+                { name: "Cloud / DevOps", level: 80, color: "bg-white" }
+            ],
+            experience: [
+                {
+                    date: "March 2025 – Dec 2025",
+                    role: "Software Developer",
+                    company: "Helios Technologies",
+                    desc: "Led the development of a customer-facing web application, improving user engagement by 40%.",
+                    tags: ["Python","Typescript", "React", "Node.js", "MongoDB", "AWS"]
+                },
+                {
+                    date: "May 2025 – May 2025",
+                    role: "Research Assistant",
+                    company: "Texas A&M Kingsville",
+                    desc: "Assisted in building the frontend of an e-commerce platform.",
+                    tags: ["AWS", "JavaScript", "Vue.js", "Firebase"]
+                },
+                {
+                    date: "April 2022 – Dec 2023",
+                    role: "Software Developer",
+                    company: "Next Gen Solutions",
+                    desc: "Built and maintained RESTful APIs serving 50K+ daily users.",
+                    tags: ["Python", "C++", "sql", "AWS" "Django", "PostgreSQL"]
+                }
+                
+            ],
+            education: [
+                {
+                    date: "2019 – 2023",
+                    degree: "Bachelor of Science in Computer Science",
+                    school: "ANITS, Vizag, India",
+                    desc: "Focused on software engineering, algorithms, and data structures. Graduated with honors."
+                },
+                {
+                    date: "2024– 2025",
+                    degree: "Master's in computer science",
+                    school: "Texas A&M Kingsville, Texas, United States",
+                    desc: "Developed early interest in programming and technology."
+                }
+            ],
+            projects: [
+                { title: "AI Neural Network", type: "PYTHON", desc: "Machine Learning model visualization." },
+                { title: "Cyber eCommerce", type: "FULL STACK", desc: "High-performance React & Django platform." },
+                { title: "Data Pipeline", type: "BACKEND", desc: "Real-time data processing system." }
+            ]
+        };
+
+        const Icon = ({ name, className }) => {
+            useEffect(() => lucide.createIcons(), [name]);
+            return <i data-lucide={name} className={className}></i>;
+        };
+
+        const Navbar = () => (
+            <nav className="fixed top-0 w-full p-6 flex justify-between items-center z-50 border-b border-white/10 backdrop-blur-sm">
+                <div className="text-xl font-bold tracking-widest text-python flex items-center gap-2 neon-text">
+                    <Icon name="terminal" className="w-6 h-6" /> VS.KALURI
+                </div>
+                <div className="flex gap-6 text-xs font-mono tracking-widest text-gray-400 hidden md:flex">
+                    <a href="#skills" className="hover:text-white transition">STACK</a>
+                    <a href="#experience" className="hover:text-white transition">EXPERIENCE</a>
+                    <a href="#education" className="hover:text-white transition">EDUCATION</a>
+                </div>
+                <a href={USER.links.github} target="_blank" className="px-4 py-2 border border-python text-python hover:bg-python hover:text-black transition-all text-sm font-mono font-bold">
+                    GITHUB_INIT
+                </a>
+            </nav>
+        );
+
+        const Hero = () => (
+            <section className="h-screen flex flex-col justify-center px-6 md:px-32 relative pt-20 pointer-events-none">
+                <div className="pointer-events-auto">
+                    <motion.div 
+                        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}
+                        className="inline-block px-3 py-1 border border-react text-react text-xs font-mono mb-4 tracking-[0.2em]"
+                    >
+                        SYSTEM_ONLINE
+                    </motion.div>
+                    
+                    <motion.h1 
+                        initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 1 }}
+                        className="text-5xl md:text-8xl font-black leading-none mb-6"
+                    >
+                        VENKATA <br />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-python to-react neon-text">
+                            SURYA TEJA KALURI
+                        </span>
+                    </motion.h1>
+
+                    <motion.div 
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
+                        className="flex items-center gap-4 text-gray-400 font-mono text-sm md:text-lg mb-8"
+                    >
+                        <span className="text-backend">//</span> SOFTWARE DEVELOPER
+                    </motion.div>
+
+                    <motion.div 
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}
+                        className="flex gap-4"
+                    >
+                        <a href={USER.links.linkedin} target="_blank" className="hud-panel px-8 py-4 text-white hover:border-react hover:text-react transition-all flex items-center gap-3">
+                            <Icon name="linkedin" className="w-5 h-5"/> CONNECT
+                        </a>
+                        <a href="#experience" className="px-8 py-4 bg-white/5 border border-white/20 hover:bg-white/10 transition-all text-sm flex items-center">
+                            LOGS_HISTORY
+                        </a>
+                    </motion.div>
+                </div>
+            </section>
+        );
+
+        const SkillBar = ({ skill, index }) => (
+            <motion.div 
+                initial={{ width: 0 }} whileInView={{ width: "100%" }} transition={{ delay: index * 0.1, duration: 1 }}
+                className="mb-6"
+            >
+                <div className="flex justify-between text-sm font-mono mb-2">
+                    <span className="text-gray-300">{skill.name}</span>
+                    <span className="text-python">{skill.level}%</span>
+                </div>
+                <div className="h-1 w-full bg-gray-800 rounded-full overflow-hidden">
+                    <motion.div 
+                        initial={{ width: 0 }} 
+                        whileInView={{ width: `${skill.level}%` }}
+                        transition={{ duration: 1.5, ease: "easeOut" }}
+                        className={`h-full ${skill.color} shadow-[0_0_10px_rgba(255,255,255,0.5)]`}
+                    />
+                </div>
+            </motion.div>
+        );
+
+        const Experience = () => (
+            <section id="experience" className="py-24 px-6 md:px-32">
+                <div className="flex items-center gap-4 mb-12">
+                    <div className="h-px flex-1 bg-gradient-to-r from-transparent to-react/50"></div>
+                    <h2 className="text-3xl font-bold neon-blue">WORK_HISTORY</h2>
+                    <div className="h-px flex-1 bg-gradient-to-l from-transparent to-react/50"></div>
+                </div>
+                
+                <div className="space-y-8">
+                    {USER.experience.map((exp, i) => (
+                        <motion.div 
+                            key={i}
+                            initial={{ opacity: 0, x: -20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            className="hud-panel p-8 rounded-lg relative overflow-hidden group"
+                        >
+                            <div className="absolute top-0 right-0 p-4 font-mono text-xs text-react opacity-50 group-hover:opacity-100">
+                                {exp.date}
+                            </div>
+                            <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
+                                <div className="p-3 bg-react/10 rounded border border-react/20">
+                                    <Icon name="briefcase" className="text-react w-6 h-6" />
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-bold text-white uppercase">{exp.role}</h3>
+                                    <p className="text-python font-mono text-sm">{exp.company}</p>
+                                </div>
+                            </div>
+                            <p className="text-gray-400 mb-6 max-w-2xl">{exp.desc}</p>
+                            <div className="flex flex-wrap gap-2">
+                                {exp.tags.map(tag => (
+                                    <span key={tag} className="text-[10px] font-mono px-2 py-1 border border-white/10 text-gray-400 uppercase">
+                                        {tag}
+                                    </span>
+                                ))}
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+            </section>
+        );
+
+        const Education = () => (
+            <section id="education" className="py-24 px-6 md:px-32 bg-black/40">
+                <h2 className="text-3xl font-bold mb-12 flex items-center gap-3">
+                    <Icon name="graduation-cap" className="text-backend" /> EDUCATION_LOGS
+                </h2>
+                <div className="grid md:grid-cols-2 gap-8">
+                    {USER.education.map((edu, i) => (
+                        <motion.div 
+                            key={i}
+                            whileHover={{ scale: 1.02 }}
+                            className="hud-panel p-8 border-l-4 border-l-backend"
+                        >
+                            <span className="text-xs font-mono text-backend mb-2 block">{edu.date}</span>
+                            <h3 className="text-xl font-bold mb-2 uppercase">{edu.degree}</h3>
+                            <p className="text-sm text-gray-300 font-mono mb-4">{edu.school}</p>
+                            <p className="text-sm text-gray-500 italic leading-relaxed">{edu.desc}</p>
+                        </motion.div>
+                    ))}
+                </div>
+            </section>
+        );
+
+        /* 
+        // COMMENTED OUT PROJECTS SECTION
+        const Projects = () => (
+            <section id="projects" className="py-24 px-6 md:px-32">
+                <h2 className="text-4xl font-bold mb-12 text-center neon-blue">DEPLOYED_SYSTEMS</h2>
+                <div className="grid md:grid-cols-3 gap-8">
+                    {USER.projects.map((project, i) => (
+                        <motion.div 
+                            key={i}
+                            initial={{ opacity: 0, y: 50 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: i * 0.2 }}
+                            className="hud-panel p-8 hover:border-python transition-colors group cursor-pointer"
+                        >
+                            <div className="text-xs font-mono text-gray-500 mb-2">{project.type}</div>
+                            <h3 className="text-2xl font-bold mb-4 group-hover:text-python transition-colors">{project.title}</h3>
+                            <p className="text-gray-400 text-sm mb-6">{project.desc}</p>
+                            <div className="flex justify-between items-center mt-auto">
+                                <Icon name="code-2" className="w-5 h-5 text-gray-600 group-hover:text-white transition" />
+                                <span className="text-xs font-mono text-python opacity-0 group-hover:opacity-100 transition">ACCESS ></span>
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+            </section>
+        );
+        */
+
+        const AboutAndSkills = () => (
+            <section id="skills" className="py-24 px-6 md:px-32">
+                <div className="grid md:grid-cols-2 gap-16">
+                    <div>
+                        <h2 className="text-3xl font-bold mb-8 flex items-center gap-3">
+                            <Icon name="cpu" className="text-react" /> TECHNICAL_STACK
+                        </h2>
+                        <p className="text-gray-400 leading-relaxed mb-8 border-l-2 border-python pl-6 font-sans">
+                            I am software developerwith 2+ years of experience building full-stack applications using Java,
+                            Python, C/C++,and modern web technologies. I enjoy creating scalable solutions, learning new tools, 
+                            and delivering high-quality software in collaborative environments.
+                        </p>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="hud-panel p-4 rounded text-center">
+                                <h3 className="text-2xl font-bold text-python">5+</h3>
+                                <p className="text-xs text-gray-500 mt-1">YEARS DEV</p>
+                            </div>
+                            <div className="hud-panel p-4 rounded text-center">
+                                <h3 className="text-2xl font-bold text-backend">100%</h3>
+                                <p className="text-xs text-gray-500 mt-1">COMMITMENT</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="hud-panel p-8 rounded-xl">
+                        {USER.skills.map((skill, i) => <SkillBar key={i} skill={skill} index={i} />)}
+                    </div>
+                </div>
+            </section>
+        );
+
+        const Footer = () => (
+            <footer className="py-12 border-t border-white/10 bg-black text-center">
+                <h2 className="text-2xl font-bold mb-8">INITIATE CONTACT</h2>
+                <div className="flex justify-center gap-8 mb-8">
+                    <a href={USER.links.github} className="hover:text-python transition hover:scale-110"><Icon name="github" /></a>
+                    <a href={USER.links.linkedin} className="hover:text-react transition hover:scale-110"><Icon name="linkedin" /></a>
+                    <a href={USER.links.email} className="hover:text-backend transition hover:scale-110"><Icon name="mail" /></a>
+                </div>
+                <div className="text-gray-600 font-mono text-xs">
+                    <p>SYSTEM ARCHITECT: {USER.name}</p>
+                    <p>© 2024 ALL RIGHTS RESERVED</p>
+                </div>
+            </footer>
+        );
+
+        const App = () => (
+            <div className="antialiased min-h-screen">
+                <Navbar />
+                <Hero />
+                <AboutAndSkills />
+                <Experience />
+                <Education />
+                {/* <Projects /> */}
+                <Footer />
+            </div>
+        );
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
