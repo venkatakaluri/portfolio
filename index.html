@@ -60,7 +60,6 @@
         .neon-text { text-shadow: 0 0 10px rgba(0, 255, 65, 0.5); }
         .neon-blue { text-shadow: 0 0 10px rgba(0, 243, 255, 0.5); }
         
-        /* Mobile specific adjustments */
         @media (max-width: 768px) {
             .hero-title { font-size: 2.8rem; line-height: 1.1; }
         }
@@ -88,7 +87,7 @@
 
             const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Limit pixel ratio for performance
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             container.appendChild(renderer.domElement);
 
             const composer = new THREE.EffectComposer(renderer);
@@ -102,7 +101,7 @@
             scene.add(gridHelper);
 
             const snakeSegments = [];
-            const numSegments = window.innerWidth < 768 ? 10 : 20; // Fewer segments on mobile
+            const numSegments = window.innerWidth < 768 ? 10 : 20;
             const head = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 0x00ff41, wireframe: true }));
             scene.add(head);
             snakeSegments.push(head);
@@ -129,7 +128,6 @@
             window.addEventListener('mousemove', onMouseMove);
             window.addEventListener('touchmove', onTouchMove);
 
-            // Handle Resize
             window.addEventListener('resize', () => {
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
@@ -336,25 +334,25 @@
         );
 
         const Contact = () => (
-            <section id="contact" className="py-12 md:py-24 px-6 md:px-32">
-                <div className="hud-panel p-8 md:p-12 rounded-3xl border-t-4 border-t-react text-center">
-                    <h2 className="text-2xl md:text-4xl font-black mb-4 neon-blue">ESTABLISH_CONNECTION</h2>
+            <section id="contact" className="py-12 md:py-24 px-6 md:px-12 lg:px-32 flex justify-center">
+                <div className="hud-panel p-6 sm:p-8 md:p-12 rounded-3xl border-t-4 border-t-react text-center w-full max-w-6xl">
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-black mb-4 neon-blue">ESTABLISH_CONNECTION</h2>
                     <p className="text-gray-400 font-mono text-[10px] md:text-sm mb-12 uppercase tracking-widest">Available for Entry-Level software development roles</p>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-                        <a href={`mailto:${USER.links.email}`} className="p-4 md:p-6 border border-white/10 hover:border-python transition group rounded-xl">
-                            <Icon name="mail" className="w-6 h-6 mx-auto mb-3 text-python group-hover:scale-110 transition" />
-                            <div className="text-[10px] font-mono text-gray-500 mb-1">EMAIL</div>
-                            <div className="text-xs font-bold truncate">{USER.links.email}</div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <a href={`mailto:${USER.links.email}`} className="p-4 md:p-6 border border-white/10 hover:border-python transition group rounded-xl flex flex-col items-center overflow-hidden">
+                            <Icon name="mail" className="w-6 h-6 mb-3 text-python group-hover:scale-110 transition shrink-0" />
+                            <div className="text-[10px] font-mono text-gray-500 mb-1 uppercase">EMAIL</div>
+                            <div className="text-xs font-bold break-all sm:break-normal w-full px-2">{USER.links.email}</div>
                         </a>
-                        <a href={`tel:${USER.links.phone}`} className="p-4 md:p-6 border border-white/10 hover:border-react transition group rounded-xl">
-                            <Icon name="phone" className="w-6 h-6 mx-auto mb-3 text-react group-hover:scale-110 transition" />
-                            <div className="text-[10px] font-mono text-gray-500 mb-1">PHONE</div>
+                        <a href={`tel:${USER.links.phone}`} className="p-4 md:p-6 border border-white/10 hover:border-react transition group rounded-xl flex flex-col items-center">
+                            <Icon name="phone" className="w-6 h-6 mb-3 text-react group-hover:scale-110 transition shrink-0" />
+                            <div className="text-[10px] font-mono text-gray-500 mb-1 uppercase">PHONE</div>
                             <div className="text-xs font-bold">{USER.links.phone}</div>
                         </a>
-                        <div className="p-4 md:p-6 border border-white/10 hover:border-backend transition group rounded-xl">
-                            <Icon name="map-pin" className="w-6 h-6 mx-auto mb-3 text-backend group-hover:scale-110 transition" />
-                            <div className="text-[10px] font-mono text-gray-500 mb-1">LOCATION</div>
+                        <div className="p-4 md:p-6 border border-white/10 hover:border-backend transition group rounded-xl flex flex-col items-center sm:col-span-2 lg:col-span-1">
+                            <Icon name="map-pin" className="w-6 h-6 mb-3 text-backend group-hover:scale-110 transition shrink-0" />
+                            <div className="text-[10px] font-mono text-gray-500 mb-1 uppercase">LOCATION</div>
                             <div className="text-xs font-bold uppercase">Texas, USA</div>
                         </div>
                     </div>
@@ -407,8 +405,8 @@
 
                 <footer className="py-12 border-t border-white/10 bg-black/80 text-center">
                     <div className="flex justify-center gap-8 mb-8">
-                        <a href={USER.links.github} className="text-gray-400 hover:text-python transition"><Icon name="github" className="w-5 h-5" /></a>
-                        <a href={USER.links.linkedin} className="text-gray-400 hover:text-react transition"><Icon name="linkedin" className="w-5 h-5" /></a>
+                        <a href={USER.links.github} className="text-gray-400 hover:text-python transition" target="_blank"><Icon name="github" className="w-5 h-5" /></a>
+                        <a href={USER.links.linkedin} className="text-gray-400 hover:text-react transition" target="_blank"><Icon name="linkedin" className="w-5 h-5" /></a>
                     </div>
                     <p className="text-gray-600 font-mono text-[9px] md:text-xs px-4 uppercase tracking-[0.3em]">© 2024 {USER.name} // SECURE_ACCESS_GRANTED</p>
                 </footer>
