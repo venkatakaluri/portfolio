@@ -1,514 +1,423 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Venkata Surya Teja Kaluri | Software Developer</title>
-    
-    <!-- React Core -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <!-- Styling & Icons -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
-    
-    <!-- Three.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
 
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import * as THREE from 'three';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
+import { 
+    Terminal, 
+    Mail, 
+    Award, 
+    Layers, 
+    Cpu, 
+    ExternalLink, 
+    MapPin, 
+    Phone, 
+    Github, 
+    Linkedin,
+    Cloud,
+    Code
+} from 'lucide-react';
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Exo 2', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    },
-                    colors: {
-                        python: '#00ff41',
-                        react: '#00f3ff',
-                        backend: '#bd00ff',
-                        aws: '#FF9900',
-                        dark: '#050505'
-                    }
-                }
-            }
+// --- Constants & Data ---
+const USER = {
+    name: "VENKATA SURYA TEJA KALURI",
+    tagline: "SOFTWARE DEVELOPER",
+    profileImage: "https://i.postimg.cc/ZnCdGFdm/profile.jpg",
+    links: {
+        github: "https://github.com/venkatakaluri",
+        linkedin: "https://www.linkedin.com/in/venkata-surya-teja-kaluri",
+        email: "venkatasuryatejak28@gmail.com",
+        phone: "+1 (561) 987-1160"
+    },
+    skills: [
+        { name: "Java / Backend", level: 80, color: "bg-backend", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" },
+        { name: "Python / AI", level: 95, color: "bg-python", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
+        { name: "JavaScript / ES6+", level: 85, color: "bg-react", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" },
+        { name: "React.js / Frontend", level: 82, color: "bg-react", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
+        { name: "HTML5 / CSS3", level: 90, color: "bg-white", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" },
+        { name: "REST APIs", level: 85, color: "bg-backend", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" },
+        { name: "SQL & Databases", level: 80, color: "bg-blue-500", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" },
+        { name: "Git / Version Control", level: 85, color: "bg-gray-400", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" },
+        { name: "Cloud (AWS Certified)", level: 92, color: "bg-aws", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg" }
+    ],
+    certification: {
+        title: "AWS Certified Solutions Architect - Associate",
+        issueDate: "Nov 9, 2024",
+        expiryDate: "Nov 9, 2027",
+        validationNum: "7ac7dce5e21c477cb6f1ddc19ae8ea9f",
+        link: "https://aws.amazon.com/verification"
+    },
+    projects: [
+        {
+            name: "MYBOT.AI",
+            url: "https://mybot.ai/",
+            desc: "Advanced AI conversational platform designed for intelligent automated interactions.",
+            tags: ["AI", "NLP", "React", "Node.js"]
+        },
+        {
+            name: "AURA AI BOT",
+            url: "https://auraaibot.netlify.app/",
+            desc: "High-end neural image and interaction bot with futuristic interface logic.",
+            tags: ["Neural Tech", "Generative AI", "Three.js"]
         }
-    </script>
-
-    <style>
-        body { margin: 0; background-color: #050505; color: white; overflow-x: hidden; width: 100%; }
-        #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
-        .hud-panel {
-            background: rgba(10, 10, 12, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.3s ease;
+    ],
+    experience: [
+        {
+            date: "March 2025 – Dec 2025",
+            role: "Software Developer",
+            company: "Helios Technologies",
+            desc: "Led the development of a customer-facing web application, improving user engagement by 40%.",
+            tags: ["Python","Typescript", "React", "Node.js", "MongoDB", "AWS"]
+        },
+        {
+            date: "May 2025 – May 2025",
+            role: "Research Assistant",
+            company: "Texas A&M Kingsville",
+            desc: "Assisted in building the frontend of an e-commerce platform and optimizing cloud resources.",
+            tags: ["AWS", "JavaScript", "Vue.js", "Firebase"]
+        },
+        {
+           date: "April 2022 – Dec 2023",
+           role: "Software Developer",
+           company: "Nex Gen Solutions",
+           desc: "Implemented backend logic in Java and managed data using MySQL for scalable web applications.",
+           tags: ["Java", "MySQL", "JavaScript", "Vue.js", "Firebase"]
         }
-        .hud-panel:hover {
-            border-color: rgba(0, 243, 255, 0.5);
-            background: rgba(15, 15, 20, 0.9);
-        }
-        .neon-text { text-shadow: 0 0 10px rgba(0, 255, 65, 0.5); }
-        .neon-blue { text-shadow: 0 0 10px rgba(0, 243, 255, 0.5); }
-        
-        @media (max-width: 768px) {
-            .hero-title { font-size: 2.8rem; line-height: 1.1; }
-        }
+    ]
+};
 
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: #333; }
-        ::-webkit-scrollbar-thumb:hover { background: #00ff41; }
+// --- Sub-Components ---
 
-        /* ====== ORBITING TECH STACK ICONS ====== */
-        @keyframes orbit {
-            0% { transform: rotate(0deg) translateX(240px) rotate(0deg); }
-            100% { transform: rotate(360deg) translateX(240px) rotate(-360deg); }
-        }
+const FloatingIconsOrbit = ({ skills }: { skills: any[] }) => {
+    const orbitSkills = skills.slice(0, 12);
+    const radius = 180;
 
-        @keyframes orbitMobile {
-            0% { transform: rotate(0deg) translateX(120px) rotate(0deg); }
-            100% { transform: rotate(360deg) translateX(120px) rotate(-360deg); }
-        }
-        
-        .tech-orbit {
-            position: absolute;
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            background: rgba(10, 10, 12, 0.85);
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(0, 255, 65, 0.25);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: orbit 24s linear infinite;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-            transition: all 0.3s ease;
-        }
-        
-        .tech-orbit:hover {
-            transform: scale(1.15);
-            border-color: #00ff41;
-            box-shadow: 0 0 30px rgba(0, 255, 65, 0.6);
-            z-index: 100;
-        }
-        
-        .tech-orbit img {
-            width: 38px;
-            height: 38px;
-            object-fit: contain;
-        }
-        
-        .orbit-container {
-            position: relative;
-            width: 520px;
-            height: 520px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-        }
+    return (
+        <div className="relative w-80 h-80 md:w-[500px] md:h-[500px] flex items-center justify-center">
+            {/* Profile Center */}
+            <motion.div 
+                className="z-20 w-32 h-32 md:w-56 md:h-56 rounded-full border-4 border-python overflow-hidden bg-dark shadow-[0_0_40px_rgba(0,255,65,0.4)]"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: 'spring', stiffness: 100, damping: 15 }}
+            >
+                <img 
+                    src={USER.profileImage} 
+                    alt="Profile" 
+                    className="w-full h-full object-cover transition-all duration-500 hover:scale-110"
+                />
+            </motion.div>
 
-        @media (max-width: 768px) {
-            .orbit-container {
-                width: 280px;
-                height: 280px;
-            }
-            .tech-orbit {
-                width: 50px;
-                height: 50px;
-                animation: orbitMobile 20s linear infinite;
-            }
-            .tech-orbit img {
-                width: 26px;
-                height: 26px;
-            }
-        }
-        
-        .tech-orbit:nth-child(1) { animation-delay: 0s; }
-        .tech-orbit:nth-child(2) { animation-delay: -2.7s; }
-        .tech-orbit:nth-child(3) { animation-delay: -5.3s; }
-        .tech-orbit:nth-child(4) { animation-delay: -8s; }
-        .tech-orbit:nth-child(5) { animation-delay: -10.7s; }
-        .tech-orbit:nth-child(6) { animation-delay: -13.3s; }
-        .tech-orbit:nth-child(7) { animation-delay: -16s; }
-        .tech-orbit:nth-child(8) { animation-delay: -18.7s; }
-        .tech-orbit:nth-child(9) { animation-delay: -21.3s; }
-        
-        .profile-ring {
-            width: 260px;
-            height: 260px;
-            border-radius: 50%;
-            border: 3px solid rgba(0, 255, 65, 0.4);
-            position: absolute;
-            overflow: hidden;
-            box-shadow: 0 0 50px rgba(0, 255, 65, 0.4), inset 0 0 50px rgba(0, 255, 65, 0.2);
-            z-index: 10;
-            background: rgba(5, 5, 5, 0.5);
-        }
+            {/* Orbiting Icons */}
+            <div className="absolute inset-0">
+                {orbitSkills.map((skill, index) => {
+                    const angle = (index / orbitSkills.length) * Math.PI * 2;
+                    return (
+                        <motion.div
+                            key={skill.name}
+                            className="absolute left-1/2 top-1/2 -ml-6 -mt-6 md:-ml-8 md:-mt-8"
+                            animate={{
+                                x: [
+                                    Math.cos(angle) * radius,
+                                    Math.cos(angle + Math.PI * 2) * radius
+                                ],
+                                y: [
+                                    Math.sin(angle) * radius,
+                                    Math.sin(angle + Math.PI * 2) * radius
+                                ]
+                            }}
+                            transition={{
+                                duration: 25,
+                                repeat: Infinity,
+                                ease: "linear"
+                            }}
+                        >
+                            <div className="group relative flex items-center justify-center pointer-events-auto">
+                                <motion.div 
+                                    className="w-12 h-12 md:w-16 md:h-16 bg-black/80 border border-white/20 rounded-2xl backdrop-blur-xl flex items-center justify-center p-2.5 shadow-2xl group-hover:border-python group-hover:shadow-[0_0_20px_rgba(0,255,65,0.5)] transition-all duration-300"
+                                    whileHover={{ scale: 1.2, rotate: 12 }}
+                                >
+                                    <img src={skill.icon} alt={skill.name} className="w-full h-full object-contain" />
+                                </motion.div>
+                                
+                                <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-python text-black text-[10px] font-bold px-2 py-0.5 rounded pointer-events-none whitespace-nowrap z-30">
+                                    {skill.name.split('/')[0].trim()}
+                                </div>
+                            </div>
+                        </motion.div>
+                    );
+                })}
+            </div>
 
-        @media (max-width: 768px) {
-            .profile-ring {
-                width: 160px;
-                height: 160px;
-            }
-        }
-        
-        .profile-ring img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-    </style>
-</head>
-<body>
+            {/* Decorative Rings */}
+            <div className="absolute w-[280px] h-[280px] md:w-[400px] md:h-[400px] rounded-full border border-white/5 animate-[spin_20s_linear_infinite]"></div>
+            <div className="absolute w-[340px] h-[340px] md:w-[480px] md:h-[480px] rounded-full border border-white/5 animate-[spin_30s_linear_infinite_reverse] opacity-40"></div>
+        </div>
+    );
+};
 
-    <div id="canvas-container"></div>
-    <div id="root" class="relative z-10"></div>
+const Navbar = () => (
+    <nav className="fixed top-0 w-full p-4 md:p-6 flex justify-between items-center z-50 border-b border-white/10 backdrop-blur-md bg-black/20">
+        <div className="text-lg md:text-xl font-bold tracking-widest text-python flex items-center gap-2 neon-text">
+            <Terminal className="w-5 h-5 md:w-6 md:h-6" /> <span className="hidden xs:inline">VS.KALURI</span>
+        </div>
+        <div className="flex gap-4 md:gap-6 text-[10px] md:text-xs font-mono tracking-widest text-gray-400">
+            <a href="#skills" className="hover:text-white transition hidden sm:block">STACK</a>
+            <a href="#projects" className="hover:text-white transition hidden sm:block">PROJECTS</a>
+            <a href={USER.links.github} target="_blank" className="px-3 py-1.5 border border-python text-python hover:bg-python hover:text-black transition-all text-[10px] md:text-sm font-mono font-bold">
+                GITHUB
+            </a>
+        </div>
+    </nav>
+);
 
-    <script>
-        const init3D = () => {
-            const container = document.getElementById('canvas-container');
-            const scene = new THREE.Scene();
-            scene.fog = new THREE.FogExp2(0x050505, 0.02);
+const Hero = () => (
+    <section className="min-h-screen flex flex-col lg:flex-row items-center justify-center px-6 md:px-32 relative pt-20 overflow-hidden">
+        <motion.div 
+            initial={{ opacity: 0, x: -50 }} 
+            animate={{ opacity: 1, x: 0 }} 
+            transition={{ duration: 0.8 }}
+            className="flex-1 text-left z-10"
+        >
+            <div className="inline-block px-3 py-1 border border-react text-react text-[10px] font-mono mb-4 tracking-[0.2em]">
+                SYSTEM_ONLINE
+            </div>
+            <h1 className="hero-title text-4xl md:text-7xl lg:text-8xl font-black leading-none mb-6">
+                VENKATA <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-python to-react neon-text">
+                    SURYA TEJA
+                </span>
+            </h1>
+            <div className="flex items-center gap-3 text-gray-400 font-mono text-xs md:text-lg mb-8">
+                <span className="text-backend">//</span> SOFTWARE DEVELOPER 
+            </div>
+            <div className="flex flex-wrap gap-4">
+                <a href="#contact" className="hud-panel px-6 py-3 md:px-8 md:py-4 text-white text-xs md:text-base hover:border-react hover:text-react transition-all flex items-center gap-3">
+                    <Mail className="w-4 h-4 md:w-5 md:h-5"/> CONTACT_ME
+                </a>
+            </div>
+        </motion.div>
 
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = 15;
-            camera.position.y = 5;
+        <motion.div 
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.2 }}
+            className="flex-1 mt-12 lg:mt-0 flex justify-center items-center relative"
+        >
+            <FloatingIconsOrbit skills={USER.skills} />
+        </motion.div>
+    </section>
+);
 
-            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            container.appendChild(renderer.domElement);
+const SkillBar = ({ skill }: { skill: any }) => (
+    <div className="mb-4">
+        <div className="flex justify-between text-[9px] md:text-[10px] font-mono mb-1 uppercase tracking-tighter">
+            <span className="text-gray-300">{skill.name}</span>
+            <span className="text-python">{skill.level}%</span>
+        </div>
+        <div className="h-1 w-full bg-gray-800 rounded-full overflow-hidden">
+            <motion.div 
+                initial={{ width: 0 }} 
+                whileInView={{ width: `${skill.level}%` }} 
+                transition={{ duration: 1.5 }} 
+                className={`h-full ${skill.color}`} 
+            />
+        </div>
+    </div>
+);
 
-            const composer = new THREE.EffectComposer(renderer);
-            composer.addPass(new THREE.RenderPass(scene, camera));
-            
-            const bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.2, 0.4, 0.85);
-            composer.addPass(bloomPass);
-
-            const gridHelper = new THREE.GridHelper(200, 100, 0x00f3ff, 0x111111);
-            gridHelper.position.y = -5;
-            scene.add(gridHelper);
-
-            const snakeSegments = [];
-            const numSegments = window.innerWidth < 768 ? 10 : 20;
-            const head = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 0x00ff41, wireframe: true }));
-            scene.add(head);
-            snakeSegments.push(head);
-
-            for (let i = 0; i < numSegments; i++) {
-                const seg = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.7, 0.7), new THREE.MeshBasicMaterial({ color: 0x008f24, wireframe: true }));
-                scene.add(seg);
-                snakeSegments.push(seg);
-            }
-
-            const mouse = new THREE.Vector2();
-            const onMouseMove = (e) => {
-                mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-                mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-            };
-
-            const onTouchMove = (e) => {
-                if (e.touches.length > 0) {
-                    mouse.x = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
-                    mouse.y = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
-                }
-            };
-
-            window.addEventListener('mousemove', onMouseMove);
-            window.addEventListener('touchmove', onTouchMove);
-
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                composer.setSize(window.innerWidth, window.innerHeight);
-            });
-
-            const animate = () => {
-                requestAnimationFrame(animate);
-                const vector = new THREE.Vector3(mouse.x, mouse.y, 0.5).unproject(camera);
-                const dir = vector.sub(camera.position).normalize();
-                const distance = -camera.position.z / dir.z * 1.5;
-                const pos = camera.position.clone().add(dir.multiplyScalar(distance));
-                
-                head.position.lerp(pos, 0.1);
-                for (let i = snakeSegments.length - 1; i > 0; i--) {
-                    snakeSegments[i].position.lerp(snakeSegments[i-1].position, 0.2);
-                }
-                gridHelper.position.z = (Date.now() * 0.002) % 2;
-                composer.render();
-            };
-            animate();
-        };
-        window.addEventListener('load', init3D);
-    </script>
-
-    <script type="text/babel">
-        const { useState, useEffect } = React;
-        const motion = window.Motion.motion;
-
-        const USER = {
-            name: "VENKATA SURYA TEJA KALURI",
-            tagline: "SOFTWARE DEVELOPER",
-            profileImage: "https://i.postimg.cc/ZnCdGFdm/profile.jpg", // REPLACE WITH YOUR IMAGE URL
-            techStack: [
-                { name: "React", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
-                { name: "Node.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" },
-                { name: "Python", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
-                { name: "JavaScript", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" },
-                { name: "TypeScript", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" },
-                { name: "HTML5", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" },
-                { name: "CSS3", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" },
-                { name: "MongoDB", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" },
-                { name: "AWS", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg" }
-            ],
-            links: {
-                github: "https://github.com/venkatakaluri",
-                linkedin: "https://www.linkedin.com/in/venkata-surya-teja-kaluri",
-                email: "venkatasuryatejak28@gmail.com",
-                phone: "+1 (561) 987-1160"
-            },
-            skills: [
-                { name: "Java / Backend", level: 80, color: "bg-backend" },
-                { name: "Python / AI", level: 95, color: "bg-python" },
-                { name: "JavaScript / ES6+", level: 85, color: "bg-react" },
-                { name: "React.js / Frontend", level: 82, color: "bg-react" },
-                { name: "HTML5 / CSS3", level: 90, color: "bg-white" },
-                { name: "REST APIs", level: 85, color: "bg-backend" },
-                { name: "SQL & Databases", level: 80, color: "bg-blue-500" },
-                { name: "Git / Version Control", level: 85, color: "bg-gray-400" },
-                { name: "Cloud (AWS Certified)", level: 92, color: "bg-aws" }
-            ],
-            certification: {
-                title: "AWS Certified Solutions Architect - Associate",
-                issueDate: "Nov 9, 2024",
-                expiryDate: "Nov 9, 2027",
-                validationNum: "7ac7dce5e21c477cb6f1ddc19ae8ea9f",
-                link: "https://aws.amazon.com/verification"
-            },
-            projects: [
-                {
-                    name: "MYBOT.AI",
-                    url: "https://mybot.ai/",
-                    desc: "Advanced AI conversational platform designed for intelligent automated interactions.",
-                    tags: ["AI", "NLP", "React", "Node.js"]
-                },
-                {
-                    name: "AURA AI BOT",
-                    url: "https://auraaibot.netlify.app/",
-                    desc: "High-end neural image and interaction bot with futuristic interface logic.",
-                    tags: ["Neural Tech", "Generative AI", "Three.js"]
-                }
-            ],
-            experience: [
-                {
-                    date: "March 2025 – Dec 2025",
-                    role: "Software Developer",
-                    company: "Helios Technologies",
-                    desc: "Led the development of a customer-facing web application, improving user engagement by 40%.",
-                    tags: ["Python","Typescript", "React", "Node.js", "MongoDB", "AWS"]
-                },
-                {
-                    date: "May 2025 – May 2025",
-                    role: "Research Assistant",
-                    company: "Texas A&M Kingsville",
-                    desc: "Assisted in building the frontend of an e-commerce platform and optimizing cloud resources.",
-                    tags: ["AWS", "JavaScript", "Vue.js", "Firebase"]
-                },
-                {
-                   date: "April 2022 – Dec 2023",
-                   role: "Software Developer",
-                   company: "Nex Gen Solutions",
-                   desc: "Implemented backend logic in Java and managed data using MySQL for scalable web applications.",
-                   tags: ["Java", "MySQL", "JavaScript", "Vue.js", "Firebase"]
-                }
-            ]
-        };
-
-        const Icon = ({ name, className }) => {
-            useEffect(() => {
-                if (window.lucide) window.lucide.createIcons();
-            }, [name]);
-            return <i data-lucide={name} className={className}></i>;
-        };
-
-        const Navbar = () => (
-            <nav className="fixed top-0 w-full p-4 md:p-6 flex justify-between items-center z-50 border-b border-white/10 backdrop-blur-md bg-black/20">
-                <div className="text-lg md:text-xl font-bold tracking-widest text-python flex items-center gap-2 neon-text">
-                    <Icon name="terminal" className="w-5 h-5 md:w-6 md:h-6" /> <span className="hidden xs:inline">VS.KALURI</span>
-                </div>
-                <div className="flex gap-4 md:gap-6 text-[10px] md:text-xs font-mono tracking-widest text-gray-400">
-                    <a href="#skills" className="hover:text-white transition hidden sm:block">STACK</a>
-                    <a href="#projects" className="hover:text-white transition hidden sm:block">PROJECTS</a>
-                    <a href={USER.links.github} target="_blank" className="px-3 py-1.5 border border-python text-python hover:bg-python hover:text-black transition-all text-[10px] md:text-sm font-mono font-bold">
-                        GITHUB
+const Certifications = () => (
+    <section id="certifications" className="py-12 px-6 md:px-32">
+        <h2 className="text-2xl md:text-3xl font-bold mb-8 flex items-center gap-3">
+            <Award className="text-aws" /> CREDENTIALS
+        </h2>
+        <motion.div 
+            whileHover={{ scale: 1.005 }} 
+            className="hud-panel p-6 md:p-8 rounded-xl border-t-4 border-t-aws relative overflow-hidden group"
+        >
+            <div className="relative z-10 grid lg:grid-cols-2 gap-8 items-center">
+                <div>
+                    <span className="text-aws font-mono text-[10px] tracking-widest uppercase">Amazon Web Services</span>
+                    <h3 className="text-xl md:text-3xl font-black mt-2 mb-4 tracking-tighter">{USER.certification.title}</h3>
+                    <div className="space-y-2 text-[10px] md:text-sm font-mono text-gray-400 mb-6">
+                        <div className="flex gap-2"> <span className="text-aws">ID:</span> {USER.certification.validationNum} </div>
+                        <div className="flex gap-2"> <span className="text-aws">ISSUED:</span> {USER.certification.issueDate} </div>
+                    </div>
+                    <a href={USER.certification.link} target="_blank" className="px-4 py-2 bg-aws/10 border border-aws text-aws text-[10px] font-bold hover:bg-aws hover:text-black transition-all inline-flex items-center gap-2">
+                        <ExternalLink className="w-4 h-4" /> VERIFY
                     </a>
                 </div>
-            </nav>
-        );
-
-        const Hero = () => (
-            <section className="min-h-screen flex flex-col lg:flex-row items-center justify-center px-6 md:px-32 relative pt-20 gap-12">
-                
-                {/* LEFT: Orbiting Tech Stack */}
-                <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1 }} className="order-2 lg:order-1">
-                    <div className="orbit-container">
-                        {USER.techStack.map((tech, i) => (
-                            <div key={i} className="tech-orbit" title={tech.name}>
-                                <img src={tech.icon} alt={tech.name} />
-                            </div>
-                        ))}
-                        {/* Center Profile Image */}
-                        <div className="profile-ring">
-                            <img src={USER.profileImage} alt="Profile" />
-                        </div>
+                <div className="hidden lg:flex justify-end">
+                    <div className="w-64 h-40 border border-aws/30 rounded bg-black/40 flex flex-col items-center justify-center p-4">
+                        <Cloud className="text-aws w-12 h-12 mb-2" />
+                        <div className="text-[10px] font-mono text-gray-500 uppercase">Solutions Architect</div>
                     </div>
-                </motion.div>
-
-                {/* RIGHT: Hero Text */}
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="order-1 lg:order-2 max-w-2xl">
-                    <div className="inline-block px-3 py-1 border border-react text-react text-[10px] font-mono mb-4 tracking-[0.2em]">
-                        SYSTEM_ONLINE
-                    </div>
-                    <h1 className="hero-title text-4xl md:text-7xl lg:text-8xl font-black leading-none mb-6">
-                        VENKATA <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-python to-react neon-text">
-                            SURYA TEJA
-                        </span>
-                    </h1>
-                    <div className="flex items-center gap-3 text-gray-400 font-mono text-xs md:text-lg mb-8">
-                        <span className="text-backend">//</span> SOFTWARE DEVELOPER 
-                    </div>
-                    <div className="flex flex-wrap gap-4">
-                        <a href="#contact" className="hud-panel px-6 py-3 md:px-8 md:py-4 text-white text-xs md:text-base hover:border-react hover:text-react transition-all flex items-center gap-3">
-                            <Icon name="mail" className="w-4 h-4 md:w-5 md:h-5"/> CONTACT_ME
-                        </a>
-                    </div>
-                </motion.div>
-            </section>
-        );
-
-        const SkillBar = ({ skill }) => (
-            <div className="mb-4">
-                <div className="flex justify-between text-[9px] md:text-[10px] font-mono mb-1 uppercase tracking-tighter">
-                    <span className="text-gray-300">{skill.name}</span>
-                    <span className="text-python">{skill.level}%</span>
-                </div>
-                <div className="h-1 w-full bg-gray-800 rounded-full overflow-hidden">
-                    <motion.div initial={{ width: 0 }} whileInView={{ width: `${skill.level}%` }} transition={{ duration: 1.5 }} className={`h-full ${skill.color}`} />
                 </div>
             </div>
-        );
+        </motion.div>
+    </section>
+);
 
-        const Certifications = () => (
-            <section id="certifications" className="py-12 px-6 md:px-32">
-                <h2 className="text-2xl md:text-3xl font-bold mb-8 flex items-center gap-3">
-                    <Icon name="award" className="text-aws" /> CREDENTIALS
-                </h2>
-                <motion.div whileHover={{ scale: 1.005 }} className="hud-panel p-6 md:p-8 rounded-xl border-t-4 border-t-aws relative overflow-hidden group">
-                    <div className="relative z-10 grid lg:grid-cols-2 gap-8 items-center">
-                        <div>
-                            <span className="text-aws font-mono text-[10px] tracking-widest uppercase">Amazon Web Services</span>
-                            <h3 className="text-xl md:text-3xl font-black mt-2 mb-4 tracking-tighter">{USER.certification.title}</h3>
-                            <div className="space-y-2 text-[10px] md:text-sm font-mono text-gray-400 mb-6">
-                                <div className="flex gap-2"> <span className="text-aws">ID:</span> {USER.certification.validationNum} </div>
-                                <div className="flex gap-2"> <span className="text-aws">ISSUED:</span> {USER.certification.issueDate} </div>
-                            </div>
-                            <a href={USER.certification.link} target="_blank" className="px-4 py-2 bg-aws/10 border border-aws text-aws text-[10px] font-bold hover:bg-aws hover:text-black transition-all inline-flex items-center gap-2">
-                                <Icon name="external-link" className="w-4 h-4" /> VERIFY
-                            </a>
-                        </div>
-                        <div className="hidden lg:flex justify-end">
-                            <div className="w-64 h-40 border border-aws/30 rounded bg-black/40 flex flex-col items-center justify-center p-4">
-                                <Icon name="cloud" className="text-aws w-12 h-12 mb-2" />
-                                <div className="text-[10px] font-mono text-gray-500 uppercase">Solutions Architect</div>
-                            </div>
-                        </div>
+const Projects = () => (
+    <section id="projects" className="py-12 md:py-24 px-6 md:px-32">
+        <h2 className="text-2xl md:text-3xl font-bold mb-12 flex items-center gap-3">
+            <Layers className="text-python" /> CORE_PROJECTS
+        </h2>
+        <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+            {USER.projects.map((proj, i) => (
+                <motion.div key={i} whileHover={{ y: -5 }} className="hud-panel p-6 md:p-8 rounded-xl border-l-4 border-l-python">
+                    <h3 className="text-xl md:text-2xl font-bold mb-4 tracking-tighter">{proj.name}</h3>
+                    <p className="text-gray-400 text-xs md:text-sm mb-6 font-sans leading-relaxed">{proj.desc}</p>
+                    <div className="flex flex-wrap gap-2 mb-8">
+                        {proj.tags.map(tag => <span key={tag} className="text-[9px] bg-white/5 px-2 py-1 text-python font-mono">{tag}</span>)}
                     </div>
+                    <a href={proj.url} target="_blank" className="text-[10px] font-mono text-react flex items-center gap-2 hover:gap-4 transition-all">
+                        VIEW_PROJECT <ExternalLink className="w-3 h-3" />
+                    </a>
                 </motion.div>
-            </section>
-        );
+            ))}
+        </div>
+    </section>
+);
 
-        const Projects = () => (
-            <section id="projects" className="py-12 md:py-24 px-6 md:px-32">
-                <h2 className="text-2xl md:text-3xl font-bold mb-12 flex items-center gap-3">
-                    <Icon name="layers" className="text-python" /> CORE_PROJECTS
-                </h2>
-                <div className="grid md:grid-cols-2 gap-6 md:gap-8">
-                    {USER.projects.map((proj, i) => (
-                        <motion.div key={i} whileHover={{ y: -5 }} className="hud-panel p-6 md:p-8 rounded-xl border-l-4 border-l-python">
-                            <h3 className="text-xl md:text-2xl font-bold mb-4 tracking-tighter">{proj.name}</h3>
-                            <p className="text-gray-400 text-xs md:text-sm mb-6 font-sans leading-relaxed">{proj.desc}</p>
-                            <div className="flex flex-wrap gap-2 mb-8">
-                                {proj.tags.map(tag => <span key={tag} className="text-[9px] bg-white/5 px-2 py-1 text-python font-mono">{tag}</span>)}
-                            </div>
-                            <a href={proj.url} target="_blank" className="text-[10px] font-mono text-react flex items-center gap-2 hover:gap-4 transition-all">
-                                VIEW_PROJECT <Icon name="external-link" className="w-3 h-3" />
-                            </a>
-                        </motion.div>
-                    ))}
-                </div>
-            </section>
-        );
-
-        const Contact = () => (
-            <section id="contact" className="py-12 md:py-24 px-4 sm:px-6 md:px-32 flex justify-center">
-                <div className="hud-panel p-5 sm:p-8 md:p-12 rounded-3xl border-t-4 border-t-react text-center w-full max-w-5xl overflow-hidden">
-                    <h2 className="text-lg sm:text-2xl md:text-4xl font-black mb-4 neon-blue tracking-tighter sm:tracking-normal break-words leading-tight">
-                        ESTABLISH_CONNECTION
-                    </h2>
-                    <p className="text-gray-400 font-mono text-[9px] md:text-sm mb-10 uppercase tracking-widest max-w-xs mx-auto">
-                        Available for Entry-Level software development roles
-                    </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                        <a href={`mailto:${USER.links.email}`} className="p-4 md:p-6 border border-white/10 hover:border-python transition group rounded-xl flex flex-col items-center min-w-0">
-                            <Icon name="mail" className="w-5 h-5 mb-3 text-python group-hover:scale-110 transition shrink-0" />
-                            <div className="text-[9px] font-mono text-gray-500 mb-1 uppercase">EMAIL</div>
-                            <div className="text-[10px] md:text-xs font-bold break-all w-full leading-tight px-1">
-                                {USER.links.email}
-                            </div>
-                        </a>
-                        <a href={`tel:${USER.links.phone}`} className="p-4 md:p-6 border border-white/10 hover:border-react transition group rounded-xl flex flex-col items-center min-w-0">
-                            <Icon name="phone" className="w-5 h-5 mb-3 text-react group-hover:scale-110 transition shrink-0" />
-                            <div className="text-[9px] font-mono text-gray-500 mb-1 uppercase">PHONE</div>
-                            <div className="text-[11px] md:text-xs font-bold whitespace-nowrap">
-                                {USER.links.phone}
-                            </div>
-                        </a>
-                        <div className="p-4 md:p-6 border border-white/10 hover:border-backend transition group rounded-xl flex flex-col items-center min-w-0 sm:col-span-2 lg:col-span-1">
-                            <Icon name="map-pin" className="w-5 h-5 mb-3 text-backend group-hover:scale-110 transition shrink-0" />
-                            <div className="text-[9px] font-mono text-gray-500 mb-1 uppercase">LOCATION</div>
-                            <div className="text-[11px] md:text-xs font-bold uppercase whitespace-nowrap">
-                                Texas, USA
-                            </div>
-                        </div>
+const Contact = () => (
+    <section id="contact" className="py-12 md:py-24 px-4 sm:px-6 md:px-32 flex justify-center">
+        <div className="hud-panel p-5 sm:p-8 md:p-12 rounded-3xl border-t-4 border-t-react text-center w-full max-w-5xl overflow-hidden">
+            <h2 className="text-lg sm:text-2xl md:text-4xl font-black mb-4 neon-blue tracking-tighter sm:tracking-normal break-words leading-tight">
+                ESTABLISH_CONNECTION
+            </h2>
+            <p className="text-gray-400 font-mono text-[9px] md:text-sm mb-10 uppercase tracking-widest max-w-xs mx-auto">
+                Available for Entry-Level software development roles
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                <a href={`mailto:${USER.links.email}`} className="p-4 md:p-6 border border-white/10 hover:border-python transition group rounded-xl flex flex-col items-center min-w-0">
+                    <Mail className="w-5 h-5 mb-3 text-python group-hover:scale-110 transition shrink-0" />
+                    <div className="text-[9px] font-mono text-gray-500 mb-1 uppercase">EMAIL</div>
+                    <div className="text-[10px] md:text-xs font-bold break-all w-full leading-tight px-1">
+                        {USER.links.email}
+                    </div>
+                </a>
+                <a href={`tel:${USER.links.phone}`} className="p-4 md:p-6 border border-white/10 hover:border-react transition group rounded-xl flex flex-col items-center min-w-0">
+                    <Phone className="w-5 h-5 mb-3 text-react group-hover:scale-110 transition shrink-0" />
+                    <div className="text-[9px] font-mono text-gray-500 mb-1 uppercase">PHONE</div>
+                    <div className="text-[11px] md:text-xs font-bold whitespace-nowrap">
+                        {USER.links.phone}
+                    </div>
+                </a>
+                <div className="p-4 md:p-6 border border-white/10 hover:border-backend transition group rounded-xl flex flex-col items-center min-w-0 sm:col-span-2 lg:col-span-1">
+                    <MapPin className="w-5 h-5 mb-3 text-backend group-hover:scale-110 transition shrink-0" />
+                    <div className="text-[9px] font-mono text-gray-500 mb-1 uppercase">LOCATION</div>
+                    <div className="text-[11px] md:text-xs font-bold uppercase whitespace-nowrap">
+                        Texas, USA
                     </div>
                 </div>
-            </section>
-        );
+            </div>
+        </div>
+    </section>
+);
 
-        const App = () => (
-            <div className="antialiased min-h-screen">
-                <Navbar />
+const App = () => {
+    useEffect(() => {
+        const container = document.getElementById('canvas-container');
+        if (!container) return;
+
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x050505, 0.02);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 15;
+        camera.position.y = 5;
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.innerHTML = ''; 
+        container.appendChild(renderer.domElement);
+
+        const composer = new EffectComposer(renderer);
+        composer.addPass(new RenderPass(scene, camera));
+        
+        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.2, 0.4, 0.85);
+        composer.addPass(bloomPass);
+
+        const gridHelper = new THREE.GridHelper(200, 100, 0x00f3ff, 0x111111);
+        gridHelper.position.y = -5;
+        scene.add(gridHelper);
+
+        const snakeSegments: THREE.Mesh[] = [];
+        const numSegments = window.innerWidth < 768 ? 10 : 20;
+        const head = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 0x00ff41, wireframe: true }));
+        scene.add(head);
+        snakeSegments.push(head);
+
+        for (let i = 0; i < numSegments; i++) {
+            const seg = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.7, 0.7), new THREE.MeshBasicMaterial({ color: 0x008f24, wireframe: true }));
+            scene.add(seg);
+            snakeSegments.push(seg);
+        }
+
+        const mouse = new THREE.Vector2();
+        const onMouseMove = (e: MouseEvent) => {
+            mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        };
+
+        const onTouchMove = (e: TouchEvent) => {
+            if (e.touches.length > 0) {
+                mouse.x = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
+            }
+        };
+
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('touchmove', onTouchMove);
+
+        const handleResize = () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
+        };
+        window.addEventListener('resize', handleResize);
+
+        let animationFrameId: number;
+        const animate = () => {
+            animationFrameId = requestAnimationFrame(animate);
+            const vector = new THREE.Vector3(mouse.x, mouse.y, 0.5).unproject(camera);
+            const dir = vector.sub(camera.position).normalize();
+            const distance = -camera.position.z / dir.z * 1.5;
+            const pos = camera.position.clone().add(dir.multiplyScalar(distance));
+            
+            head.position.lerp(pos, 0.1);
+            for (let i = snakeSegments.length - 1; i > 0; i--) {
+                snakeSegments[i].position.lerp(snakeSegments[i-1].position, 0.2);
+            }
+            gridHelper.position.z = (Date.now() * 0.002) % 2;
+            composer.render();
+        };
+        animate();
+
+        return () => {
+            window.removeEventListener('mousemove', onMouseMove);
+            window.removeEventListener('touchmove', onTouchMove);
+            window.removeEventListener('resize', handleResize);
+            cancelAnimationFrame(animationFrameId);
+        };
+    }, []);
+
+    return (
+        <div className="antialiased min-h-screen text-white font-sans selection:bg-python selection:text-black">
+            <div id="canvas-container" className="fixed inset-0 -z-10 pointer-events-none" />
+            <Navbar />
+            <main>
                 <Hero />
-                
                 <section id="skills" className="py-12 md:py-24 px-6 md:px-32">
                     <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
                         <div>
                             <h2 className="text-2xl md:text-3xl font-bold mb-8 flex items-center gap-3">
-                                <Icon name="cpu" className="text-react" /> TECHNICAL_STACK
+                                <Cpu className="text-react" /> TECHNICAL_STACK
                             </h2>
                             <p className="text-gray-400 text-sm md:text-base leading-relaxed mb-8 border-l-2 border-python pl-6 font-sans">
                                 Software developer with experience across the full lifecycle of application development. 
@@ -520,10 +429,8 @@
                         </div>
                     </div>
                 </section>
-
                 <Certifications />
                 <Projects />
-
                 <section id="experience" className="py-12 md:py-24 px-6 md:px-32">
                     <h2 className="text-2xl md:text-3xl font-bold mb-12 text-center neon-blue">WORK_HISTORY</h2>
                     <div className="max-w-4xl mx-auto space-y-6 md:space-y-8">
@@ -539,21 +446,17 @@
                         ))}
                     </div>
                 </section>
-
                 <Contact />
+            </main>
+            <footer className="py-12 border-t border-white/10 bg-black/80 text-center">
+                <div className="flex justify-center gap-8 mb-8">
+                    <a href={USER.links.github} className="text-gray-400 hover:text-python transition" target="_blank"><Github className="w-5 h-5" /></a>
+                    <a href={USER.links.linkedin} className="text-gray-400 hover:text-react transition" target="_blank"><Linkedin className="w-5 h-5" /></a>
+                </div>
+                <p className="text-gray-600 font-mono text-[9px] md:text-xs px-4 uppercase tracking-[0.3em]">© 2024 {USER.name} // SECURE_ACCESS_GRANTED</p>
+            </footer>
+        </div>
+    );
+};
 
-                <footer className="py-12 border-t border-white/10 bg-black/80 text-center">
-                    <div className="flex justify-center gap-8 mb-8">
-                        <a href={USER.links.github} className="text-gray-400 hover:text-python transition" target="_blank"><Icon name="github" className="w-5 h-5" /></a>
-                        <a href={USER.links.linkedin} className="text-gray-400 hover:text-react transition" target="_blank"><Icon name="linkedin" className="w-5 h-5" /></a>
-                    </div>
-                    <p className="text-gray-600 font-mono text-[9px] md:text-xs px-4 uppercase tracking-[0.3em]">© 2024 {USER.name} // SECURE_ACCESS_GRANTED</p>
-                </footer>
-            </div>
-        );
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
-</body>
-</html>
+export default App;
