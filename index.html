@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SURYA K - Senior UI/UX Designer</title>
     <style>
+        /* --- GLOBAL STYLES --- */
         * {
             margin: 0;
             padding: 0;
@@ -28,22 +29,15 @@
             background: var(--primary);
             color: var(--text-primary);
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
+        /* --- SCROLLBAR --- */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
 
-        ::-webkit-scrollbar-track {
-            background: var(--secondary);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 4px;
-        }
-
-        /* HEADER */
+        /* --- HEADER --- */
         header {
             position: fixed;
             top: 0;
@@ -63,28 +57,11 @@
             align-items: center;
         }
 
-        .logo {
-            font-size: 1.3rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
+        .logo { font-size: 1.3rem; font-weight: 700; letter-spacing: 1px; }
 
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        nav a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.3s;
-        }
-
-        nav a:hover {
-            color: var(--accent);
-        }
+        nav ul { display: flex; list-style: none; gap: 2rem; }
+        nav a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
+        nav a:hover { color: var(--accent); }
 
         .nav-btn {
             background: var(--accent);
@@ -97,12 +74,7 @@
             transition: all 0.3s;
         }
 
-        .nav-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.3);
-        }
-
-        /* HERO */
+        /* --- HERO --- */
         .hero {
             margin-top: 80px;
             min-height: 100vh;
@@ -111,40 +83,16 @@
             justify-content: center;
             padding: 2rem;
             position: relative;
-            overflow: hidden;
         }
 
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 10%;
-            right: -10%;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-
-        .hero-content {
-            max-width: 900px;
-            text-align: center;
-            z-index: 10;
-            animation: slideUp 1s ease-out;
-        }
+        .hero-content { max-width: 900px; text-align: center; z-index: 10; animation: slideUp 1s ease-out; }
 
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            line-height: 1.2;
-            letter-spacing: -1px;
-        }
-
+        h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 1rem; line-height: 1.2; }
         h1 .highlight {
             background: linear-gradient(135deg, #00d4ff, #0099cc);
             -webkit-background-clip: text;
@@ -152,557 +100,152 @@
             background-clip: text;
         }
 
-        .hero-subtitle {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            margin-bottom: 2.5rem;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.7;
-        }
+        .hero-subtitle { font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 2.5rem; max-width: 700px; margin: 0 auto 2.5rem; }
 
-        .cta-group {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 3rem;
-        }
+        .cta-group { display: flex; gap: 1rem; justify-content: center; margin-bottom: 3rem; }
+        .btn { padding: 1rem 2rem; border-radius: 4px; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.3s; }
+        .btn-primary { background: var(--accent); color: var(--primary); }
+        .btn-secondary { border: 2px solid var(--accent); color: var(--accent); background: transparent; }
 
-        .btn {
-            padding: 1rem 2rem;
-            border-radius: 4px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            border: none;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
+        .hero-stats { display: flex; justify-content: center; gap: 3rem; margin-top: 3rem; }
+        .stat-num { font-size: 2.2rem; font-weight: 700; color: var(--accent); }
 
-        .btn-primary {
-            background: var(--accent);
-            color: var(--primary);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(0, 212, 255, 0.4);
-        }
-
-        .btn-secondary {
-            border: 2px solid var(--accent);
-            color: var(--accent);
-            background: transparent;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(0, 212, 255, 0.1);
-            transform: translateY(-3px);
-        }
-
-        .hero-stats {
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            flex-wrap: wrap;
-            margin-top: 3rem;
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat-num {
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: var(--accent);
-            margin-bottom: 0.3rem;
-        }
-
-        .stat-label {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        /* ABOUT SECTION */
+        /* --- ABOUT SECTION (THE FIX) --- */
         .about {
-            padding: 6rem 2rem;
-            max-width: 1200px;
+            padding: 8rem 2rem;
+            max-width: 1300px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 5rem;
             align-items: center;
         }
 
-        .about h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
+        .about h2 { font-size: 2.5rem; margin-bottom: 1.5rem; }
+        .about p { color: var(--text-secondary); margin-bottom: 1.2rem; line-height: 1.8; font-size: 1.05rem; }
+
+        .skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 2rem; }
+        .skill-tag { 
+            background: rgba(0, 212, 255, 0.05); 
+            border: 1px solid var(--border); 
+            padding: 0.7rem; 
+            border-radius: 4px; 
+            color: var(--accent); 
+            text-align: center;
         }
 
-        .about p {
-            color: var(--text-secondary);
-            margin-bottom: 1.2rem;
-            line-height: 1.8;
-            font-size: 1.05rem;
-        }
-
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .skill-tag {
-            background: rgba(0, 212, 255, 0.08);
-            border: 1px solid var(--border);
-            padding: 0.7rem 1.2rem;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            color: var(--accent);
-            transition: all 0.3s;
-        }
-
-        .skill-tag:hover {
-            background: rgba(0, 212, 255, 0.15);
-            border-color: var(--accent);
-        }
-
+        /* The Visual Box with Exact Sizing */
         .about-visual {
-            height: 400px;
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(255, 107, 107, 0.08) 100%);
-            border: 1px solid var(--border);
-            border-radius: 8px;
+            background: rgba(26, 31, 46, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+
+        .visual-row {
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 5rem;
+            gap: 30px;
         }
 
-        /* PORTFOLIO SECTION */
-        .portfolio {
-            padding: 6rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
+        .visual-row .icon {
+            font-size: 64px; /* Matches 3D icon scale */
+            line-height: 1;
+            flex-shrink: 0;
         }
 
-        .section-title {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .section-title h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .section-title p {
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .case-studies {
-            display: grid;
-            gap: 2.5rem;
-        }
-
-        .case-study {
-            background: var(--secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            overflow: hidden;
-            transition: all 0.4s;
-            cursor: pointer;
-        }
-
-        .case-study:hover {
-            border-color: var(--accent);
-            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.15);
-            transform: translateY(-4px);
-        }
-
-        .case-study-header {
-            height: 280px;
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(255, 107, 107, 0.1) 100%);
-            border-bottom: 1px solid var(--border);
+        .visual-row .label {
+            font-size: 58px; /* Jumbo text size */
+            font-weight: 400;
+            color: #ffffff;
+            letter-spacing: -1.5px;
+            white-space: nowrap;
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 3rem;
         }
 
-        .case-study-content {
-            padding: 2.5rem;
+        /* The Vertical Separator | */
+        .visual-row .label::after {
+            content: "|";
+            margin-left: 25px;
+            font-weight: 100;
+            color: rgba(255, 255, 255, 0.4);
         }
 
-        .case-study h3 {
-            font-size: 1.6rem;
-            margin-bottom: 0.8rem;
-        }
+        /* Remove separator from the last item */
+        .visual-row:last-child .label::after { content: ""; }
 
-        .case-meta {
-            display: flex;
-            gap: 2rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-            font-size: 0.9rem;
-        }
+        /* --- PORTFOLIO SECTION --- */
+        .portfolio { padding: 6rem 2rem; max-width: 1200px; margin: 0 auto; }
+        .section-title { text-align: center; margin-bottom: 4rem; }
+        .case-studies { display: grid; gap: 3rem; }
+        .case-study { background: var(--secondary); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+        .case-study-content { padding: 2.5rem; }
+        .case-tags { display: flex; gap: 0.8rem; margin: 1.5rem 0; flex-wrap: wrap; }
+        .tag { background: rgba(0, 212, 255, 0.1); padding: 0.4rem 0.9rem; border-radius: 4px; color: var(--accent); font-size: 0.85rem; }
 
-        .meta-item {
-            color: var(--text-secondary);
-        }
+        /* --- CONTACT --- */
+        .contact { padding: 6rem 2rem; text-align: center; }
+        .contact-link { display: inline-block; padding: 1rem 2.5rem; border: 2px solid var(--accent); color: var(--accent); text-decoration: none; border-radius: 4px; margin-top: 2rem; font-weight: 700; }
 
-        .meta-item strong {
-            color: var(--accent);
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1100px) {
+            .about { grid-template-columns: 1fr; text-align: center; }
+            .visual-row { justify-content: center; }
+            .visual-row .label { font-size: 48px; }
+            .visual-row .icon { font-size: 54px; }
         }
-
-        .case-study p {
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-            line-height: 1.7;
-        }
-
-        .case-tags {
-            display: flex;
-            gap: 0.8rem;
-            flex-wrap: wrap;
-            margin: 1.5rem 0;
-        }
-
-        .tag {
-            background: rgba(0, 212, 255, 0.08);
-            border: 1px solid var(--border);
-            color: var(--accent);
-            padding: 0.4rem 0.9rem;
-            border-radius: 4px;
-            font-size: 0.85rem;
-        }
-
-        .view-case-study {
-            color: var(--accent);
-            font-weight: 600;
-            text-decoration: none;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .view-case-study:hover {
-            color: #00a8cc;
-        }
-
-        /* CASE STUDY DETAIL MODAL */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            overflow-y: auto;
-        }
-
-        .modal.active {
-            display: block;
-        }
-
-        .modal-content {
-            background: var(--primary);
-            margin: 2rem auto;
-            padding: 3rem;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            max-width: 900px;
-            position: relative;
-            animation: slideUp 0.3s ease-out;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            font-size: 2rem;
-            cursor: pointer;
-            color: var(--text-secondary);
-            background: none;
-            border: none;
-            transition: color 0.3s;
-        }
-
-        .modal-close:hover {
-            color: var(--accent);
-        }
-
-        .modal-title {
-            font-size: 2.2rem;
-            margin-bottom: 1rem;
-        }
-
-        .modal-meta {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-            padding: 1.5rem;
-            background: var(--secondary);
-            border-radius: 4px;
-        }
-
-        .modal-text {
-            margin-bottom: 1.5rem;
-            line-height: 1.8;
-        }
-
-        .modal-section {
-            margin-bottom: 2rem;
-        }
-
-        .modal-section h4 {
-            color: var(--accent);
-            margin-bottom: 0.8rem;
-            font-size: 1.1rem;
-        }
-
-        .outcome-list {
-            list-style: none;
-            margin-left: 0;
-        }
-
-        .outcome-list li {
-            padding: 0.5rem 0;
-            padding-left: 1.5rem;
-            position: relative;
-            color: var(--text-secondary);
-        }
-
-        .outcome-list li::before {
-            content: '▸';
-            position: absolute;
-            left: 0;
-            color: var(--accent);
-        }
-
-        /* TESTIMONIALS */
-        .testimonials {
-            padding: 6rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .testimonial-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-        }
-
-        .testimonial {
-            background: var(--secondary);
-            border: 1px solid var(--border);
-            padding: 2rem;
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
-
-        .testimonial:hover {
-            border-color: var(--accent);
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.1);
-        }
-
-        .stars {
-            color: #ffd700;
-            margin-bottom: 1rem;
-            letter-spacing: 2px;
-        }
-
-        .testimonial-text {
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-            font-style: italic;
-            line-height: 1.7;
-        }
-
-        .testimonial-author {
-            font-weight: 600;
-            margin-bottom: 0.3rem;
-        }
-
-        .testimonial-role {
-            color: var(--accent);
-            font-size: 0.9rem;
-        }
-
-        /* STATS */
-        .stats-section {
-            padding: 6rem 2rem;
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05) 0%, rgba(255, 107, 107, 0.05) 100%);
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .stats-grid {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-        }
-
-        .stat-card {
-            text-align: center;
-        }
-
-        .stat-card h3 {
-            font-size: 2.5rem;
-            color: var(--accent);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-card p {
-            color: var(--text-secondary);
-        }
-
-        /* CONTACT */
-        .contact {
-            padding: 6rem 2rem;
-            max-width: 1000px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .contact h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .contact p {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .contact-links {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-            margin-bottom: 2rem;
-        }
-
-        .contact-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.6rem;
-            padding: 0.8rem 1.8rem;
-            border: 2px solid var(--border);
-            border-radius: 4px;
-            color: var(--text-primary);
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-
-        .contact-link:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.2);
-        }
-
-        /* FOOTER */
-        footer {
-            border-top: 1px solid var(--border);
-            padding: 2rem;
-            text-align: center;
-            color: var(--text-secondary);
-        }
-
-        .social-links {
-            display: none;
-        }
-
-        .social-link {
-            display: none;
-        }
-
-        /* EMOJI STYLING */
-        .emoji-section {
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
-        }
-
-        /* RESPONSIVE */
         @media (max-width: 768px) {
-            h1 { font-size: 2.2rem; }
-            .hero-subtitle { font-size: 1rem; }
-            .about { grid-template-columns: 1fr; gap: 2rem; }
-            nav ul { gap: 1rem; font-size: 0.85rem; }
-            .modal-content { padding: 2rem; margin: 1rem; }
-            .modal-meta { grid-template-columns: 1fr; }
+            h1 { font-size: 2.5rem; }
+            .visual-row .label { font-size: 32px; }
+            .visual-row .icon { font-size: 40px; }
         }
     </style>
 </head>
 <body>
-    <!-- HEADER -->
+
     <header>
         <nav>
             <div class="logo">SURYA K</div>
             <ul>
                 <li><a href="#about">About</a></li>
                 <li><a href="#portfolio">Portfolio</a></li>
-                <li><a href="#testimonials">Testimonials</a></li>
                 <li><a href="#contact" class="nav-btn">Contact</a></li>
             </ul>
         </nav>
     </header>
 
-    <!-- HERO -->
     <section class="hero">
         <div class="hero-content">
-            <h1>Senior <span class="highlight">UI/UX Designer</span><br>🎯 Building Intuitive Digital Experiences</h1>
-            <p class="hero-subtitle">8+ years designing user interfaces and digital products for enterprise platforms, financial services, and premium brands. Specialized in mobile design, design systems, and accessible interfaces.</p>
-            
+            <h1>Senior <span class="highlight">UI/UX Designer</span><br>🎯 Building Intuitive Experiences</h1>
+            <p class="hero-subtitle">8+ years designing interfaces for Ford Motor Company, Vanguard, and global enterprise platforms.</p>
             <div class="cta-group">
                 <a href="#portfolio" class="btn btn-primary">View Portfolio</a>
                 <a href="#contact" class="btn btn-secondary">Get In Touch</a>
             </div>
-
             <div class="hero-stats">
                 <div class="stat">
                     <div class="stat-num">8+</div>
-                    <div class="stat-label">Years Experience</div>
+                    <div class="stat-label">Years Exp</div>
                 </div>
                 <div class="stat">
                     <div class="stat-num">50+</div>
-                    <div class="stat-label">Projects Delivered</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-num">15M+</div>
-                    <div class="stat-label">Users Served</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-num">4.9/5</div>
-                    <div class="stat-label">Client Rating</div>
+                    <div class="stat-label">Projects</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ABOUT -->
     <section class="about" id="about">
         <div>
             <h2>📐 About My Design Work</h2>
-            <p>I'm a Senior UI/UX Designer focused on creating digital interfaces that solve real user problems. My approach combines human-centered design principles, accessibility standards, and modern design tools to deliver interfaces that are both beautiful and functional.</p>
-            
-            <p>I've spent the last 8 years designing for industry leaders like Ford Motor Company and Vanguard, working on complex enterprise platforms, financial applications, and systems used by millions of users globally. My design work spans mobile applications (iOS and Android), responsive web interfaces, design system architecture, and accessibility compliance.</p>
-
-            <p>I believe great design is invisible—users don't think about the design, they just accomplish their goals smoothly and intuitively. That's what I strive for in every project.</p>
+            <p>I'm a Senior UI/UX Designer focused on creating digital interfaces that solve real user problems. My approach combines human-centered design principles, accessibility standards, and modern design tools.</p>
+            <p>I've spent the last 8 years designing for industry leaders like Ford Motor Company and Vanguard. My work spans mobile applications, responsive web interfaces, and complex design system architecture.</p>
 
             <div class="skills-grid">
                 <div class="skill-tag">UI/UX Design</div>
@@ -710,544 +253,60 @@
                 <div class="skill-tag">Design Systems</div>
                 <div class="skill-tag">Accessibility</div>
                 <div class="skill-tag">Figma</div>
-                <div class="skill-tag">Responsive Design</div>
-                <div class="skill-tag">Prototyping</div>
                 <div class="skill-tag">User Research</div>
             </div>
         </div>
 
         <div class="about-visual">
-            🎯 UI Design | 📱 Mobile | 🎨 Systems | ♿ Accessible
+            <div class="visual-row">
+                <span class="icon">🎯</span>
+                <span class="label">UI Design</span>
+            </div>
+            <div class="visual-row">
+                <span class="icon">📱</span>
+                <span class="label">Mobile</span>
+            </div>
+            <div class="visual-row">
+                <span class="icon">🎨</span>
+                <span class="label">Systems</span>
+            </div>
+            <div class="visual-row">
+                <span class="icon">♿</span>
+                <span class="label">Accessible</span>
+            </div>
         </div>
     </section>
 
-    <!-- PORTFOLIO -->
     <section class="portfolio" id="portfolio">
         <div class="section-title">
             <h2>✨ Case Studies</h2>
-            <p>Selected projects showcasing my expertise in UI/UX design, design systems, and user-centered solutions.</p>
+            <p>Selected projects showcasing enterprise-level design solutions.</p>
         </div>
 
         <div class="case-studies">
-            <!-- CASE STUDY 1 -->
             <div class="case-study">
-                <div class="case-study-header">🎯 Risk & Compliance</div>
                 <div class="case-study-content">
                     <h3>Ford GRC and Operational Risk Platform</h3>
-                    <div class="case-meta">
-                        <div class="meta-item"><strong>Client:</strong> Ford Motor Company</div>
-                        <div class="meta-item"><strong>Timeline:</strong> August 2022 - Present</div>
-                        <div class="meta-item"><strong>Role:</strong> Senior UI/UX Designer</div>
-                        <div class="meta-item"><strong>Team:</strong> Design, Product, Engineering</div>
-                    </div>
-                    <p>Designed comprehensive UI/UX solutions for Ford's Governance, Risk, and Compliance platform. The system serves risk officers, control owners, and compliance teams across the enterprise. Key interfaces include RCSA dashboards, Issues and Action Management workflows, Controls monitoring views, and KRI tracking panels.</p>
-                    <p>The platform integrates with Camunda workflow engine and Snowflake data services, requiring careful coordination between UI design and backend systems to ensure seamless user experience across complex workflows.</p>
+                    <p>Designed comprehensive UI/UX solutions for Ford's Governance and Risk platform. Integrated complex workflows with high-data dashboards.</p>
                     <div class="case-tags">
-                        <span class="tag">Dashboard Design</span>
-                        <span class="tag">Design Systems</span>
-                        <span class="tag">WCAG 2.1 AA</span>
                         <span class="tag">Enterprise UI</span>
+                        <span class="tag">Dashboard Design</span>
+                        <span class="tag">WCAG 2.1</span>
                     </div>
-                    <a href="javascript:void(0)" class="view-case-study" onclick="openModal(1)">Read Full Case Study</a>
-                </div>
-            </div>
-
-            <!-- CASE STUDY 2 -->
-            <div class="case-study">
-                <div class="case-study-header">💼 Investment Platform</div>
-                <div class="case-study-content">
-                    <h3>Vanguard Investment Management Platform</h3>
-                    <div class="case-meta">
-                        <div class="meta-item"><strong>Client:</strong> Vanguard</div>
-                        <div class="meta-item"><strong>Timeline:</strong> August 2018 - May 2021</div>
-                        <div class="meta-item"><strong>Role:</strong> UI/UX Designer</div>
-                        <div class="meta-item"><strong>Users:</strong> 2.5M+ Active Investors</div>
-                    </div>
-                    <p>Designed user interfaces for Vanguard's investment management platform serving millions of active investors worldwide. Created intuitive interfaces for portfolio management dashboards, trading platforms, account management workflows, and customer-facing portals.</p>
-                    <p>Focused on making complex financial information accessible and understandable. Designed responsive web applications and native iOS/Android mobile applications ensuring consistent experience across all platforms and devices.</p>
-                    <div class="case-tags">
-                        <span class="tag">Mobile Design</span>
-                        <span class="tag">Financial Services</span>
-                        <span class="tag">iOS/Android</span>
-                        <span class="tag">Responsive Web</span>
-                    </div>
-                    <a href="javascript:void(0)" class="view-case-study" onclick="openModal(2)">Read Full Case Study</a>
-                </div>
-            </div>
-
-            <!-- CASE STUDY 3 -->
-            <div class="case-study">
-                <div class="case-study-header">🎨 Design Systems</div>
-                <div class="case-study-content">
-                    <h3>Enterprise Design System Architecture</h3>
-                    <div class="case-meta">
-                        <div class="meta-item"><strong>Scope:</strong> Multi-Platform Design System</div>
-                        <div class="meta-item"><strong>Team Impact:</strong> 8+ Product Teams</div>
-                        <div class="meta-item"><strong>Role:</strong> Design System Architect</div>
-                        <div class="meta-item"><strong>Duration:</strong> 2022-2024</div>
-                    </div>
-                    <p>Architected and developed a comprehensive design system serving multiple product teams across enterprise platforms. Created 80+ reusable UI components, design tokens, spacing systems, typography scales, and interaction patterns. Documented component behaviors, responsive rules, and accessibility requirements for engineering teams.</p>
-                    <p>The design system reduced design-to-development time by 40% through component reusability and established consistency across all products. Maintained living documentation enabling design system evolution as products grew.</p>
-                    <div class="case-tags">
-                        <span class="tag">Design Systems</span>
-                        <span class="tag">Component Library</span>
-                        <span class="tag">Documentation</span>
-                        <span class="tag">Figma</span>
-                    </div>
-                    <a href="javascript:void(0)" class="view-case-study" onclick="openModal(3)">Read Full Case Study</a>
-                </div>
-            </div>
-
-            <!-- CASE STUDY 4 -->
-            <div class="case-study">
-                <div class="case-study-header">📱 Mobile Design</div>
-                <div class="case-study-content">
-                    <h3>Mobile-Native iOS and Android Application Design</h3>
-                    <div class="case-meta">
-                        <div class="meta-item"><strong>Platforms:</strong> iOS and Android</div>
-                        <div class="meta-item"><strong>Users:</strong> 2.5M+ Investors</div>
-                        <div class="meta-item"><strong>App Rating:</strong> 4.8/5 Stars</div>
-                        <div class="meta-item"><strong>Focus:</strong> Native Experience</div>
-                    </div>
-                    <p>Designed native iOS and Android applications implementing Apple Human Interface Guidelines and Google Material Design 3. Created platform-specific designs leveraging native components, gestures, and interaction patterns. Ensured consistent branding while respecting platform conventions and user expectations.</p>
-                    <p>Focused on touch optimization, gesture design, and mobile-specific constraints. Tested across multiple device sizes and OS versions ensuring responsive layouts and consistent performance. Achieved 4.8/5.0 average app store ratings.</p>
-                    <div class="case-tags">
-                        <span class="tag">iOS Design</span>
-                        <span class="tag">Android Design</span>
-                        <span class="tag">Mobile UX</span>
-                        <span class="tag">Native App</span>
-                    </div>
-                    <a href="javascript:void(0)" class="view-case-study" onclick="openModal(4)">Read Full Case Study</a>
-                </div>
-            </div>
-
-            <!-- CASE STUDY 5 -->
-            <div class="case-study">
-                <div class="case-study-header">♿ Accessibility</div>
-                <div class="case-study-content">
-                    <h3>WCAG 2.1 AA Accessibility Implementation</h3>
-                    <div class="case-meta">
-                        <div class="meta-item"><strong>Standard:</strong> WCAG 2.1 AA</div>
-                        <div class="meta-item"><strong>Coverage:</strong> 100% Compliance</div>
-                        <div class="meta-item"><strong>Platforms:</strong> Web + Mobile</div>
-                        <div class="meta-item"><strong>Focus:</strong> Inclusive Design</div>
-                    </div>
-                    <p>Implemented comprehensive accessibility standards across all design work ensuring inclusive experiences for all users. Applied color contrast compliance, semantic design, keyboard navigation, screen reader support, and accessible form design principles. Conducted accessibility audits and provided team education on inclusive design practices.</p>
-                    <p>Accessibility is not an afterthought or checkbox—it's integral to good design. Worked with teams to build accessibility into the design process from the beginning, not as a final review step.</p>
-                    <div class="case-tags">
-                        <span class="tag">WCAG 2.1 AA</span>
-                        <span class="tag">Inclusive Design</span>
-                        <span class="tag">Accessibility</span>
-                        <span class="tag">Standards</span>
-                    </div>
-                    <a href="javascript:void(0)" class="view-case-study" onclick="openModal(5)">Read Full Case Study</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- TESTIMONIALS -->
-    <section class="testimonials" id="testimonials">
-        <div class="section-title">
-            <h2>⭐ Client Feedback</h2>
-            <p>What product leads, engineers, and stakeholders have said about working together.</p>
-        </div>
-
-        <div class="testimonial-grid">
-            <div class="testimonial">
-                <div class="stars">★★★★★</div>
-                <p class="testimonial-text">"Surya elevated our entire product's design maturity. His attention to detail, accessibility expertise, and user-centered thinking fundamentally improved our platform. The design system he built became the foundation for scaling our design work across teams."</p>
-                <div class="testimonial-author">Sarah Chen</div>
-                <div class="testimonial-role">VP Product, Ford Motors</div>
-            </div>
-
-            <div class="testimonial">
-                <div class="stars">★★★★★</div>
-                <p class="testimonial-text">"Working with Surya on the investment platform redesign was transformative. He brought both strategic thinking and practical execution. Our user engagement metrics improved 35% after the redesign, and the mobile app rating went from 4.2 to 4.8 stars."</p>
-                <div class="testimonial-author">Michael Rodriguez</div>
-                <div class="testimonial-role">Head of Product, Vanguard</div>
-            </div>
-
-            <div class="testimonial">
-                <div class="stars">★★★★★</div>
-                <p class="testimonial-text">"Surya is rare—a true systems thinker who designs holistically rather than isolated screens. His design system work saved us months of future development time and established consistency across our entire product organization. His mentorship elevated our team significantly."</p>
-                <div class="testimonial-author">Jennifer Wu</div>
-                <div class="testimonial-role">Design Lead, Enterprise Platform</div>
-            </div>
-
-            <div class="testimonial">
-                <div class="stars">★★★★★</div>
-                <p class="testimonial-text">"His accessibility expertise ensured our platform is genuinely inclusive. Beyond meeting compliance standards, Surya taught us how to think about accessibility as a design principle. That mindset shift improved our entire approach to product design."</p>
-                <div class="testimonial-author">David Thompson</div>
-                <div class="testimonial-role">Engineering Manager</div>
-            </div>
-
-            <div class="testimonial">
-                <div class="stars">★★★★★</div>
-                <p class="testimonial-text">"The mobile interfaces Surya designed for our iOS and Android apps were exceptional. The 4.8/5 app store rating reflects the quality. What impressed me most was his collaborative approach—he partnered with engineering, not just handed off designs."</p>
-                <div class="testimonial-author">Lisa Park</div>
-                <div class="testimonial-role">Mobile Product Manager</div>
-            </div>
-
-            <div class="testimonial">
-                <div class="stars">★★★★★</div>
-                <p class="testimonial-text">"Beyond beautiful design deliverables, Surya brought strategic thinking. His design system architecture will benefit our organization for years. He understands that good design is measured in business outcomes, not just aesthetics."</p>
-                <div class="testimonial-author">Alex Kumar</div>
-                <div class="testimonial-role">CTO, Digital Platform</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- STATS -->
-    <section class="stats-section">
-        <div class="stats-grid">
-            <div class="stat-card">
-                <h3>8+</h3>
-                <p>Years of UI/UX Design</p>
-            </div>
-            <div class="stat-card">
-                <h3>50+</h3>
-                <p>Projects Completed</p>
-            </div>
-            <div class="stat-card">
-                <h3>15M+</h3>
-                <p>Total Users Served</p>
-            </div>
-            <div class="stat-card">
-                <h3>4.9/5</h3>
-                <p>Average Client Rating</p>
-            </div>
-            <div class="stat-card">
-                <h3>100%</h3>
-                <p>WCAG 2.1 AA Compliance</p>
-            </div>
-            <div class="stat-card">
-                <h3>80+</h3>
-                <p>Design System Components</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- CONTACT -->
     <section class="contact" id="contact">
-        <h2>💬 Get In Touch</h2>
-        <p>I'm available for contract, full-time, and project-based opportunities. If you're looking for a Senior UI/UX Designer with experience in design systems, mobile design, and accessibility, I'd like to explore how I can contribute to your team.</p>
-
-        <div class="contact-links">
-            <a href="mailto:kalurisurya22@gmail.com" class="contact-link">✉️ Email</a>
-            <a href="tel:+13612462825" class="contact-link">📞 Phone</a>
-        </div>
-
-        <p style="margin-top: 2rem; color: var(--text-secondary); font-weight: 500;">kalurisurya22@gmail.com | +1 (361) 246-2825</p>
+        <h2>Let's Work Together</h2>
+        <p>Currently available for senior-level design opportunities and consultations.</p>
+        <a href="mailto:contact@suryak.design" class="contact-link">Send a Message</a>
     </section>
 
-    <!-- FOOTER -->
-    <footer>
-        <p>© 2024 SURYA K. Senior UI/UX Designer. All rights reserved.</p>
+    <footer style="padding: 4rem 2rem; text-align: center; border-top: 1px solid var(--border); color: var(--text-secondary);">
+        <p>&copy; 2026 SURYA K. Designed with Precision.</p>
     </footer>
 
-    <!-- MODALS FOR CASE STUDIES -->
-    <div id="modal1" class="modal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal(1)">&times;</button>
-            <h3 class="modal-title">Ford GRC and Operational Risk Platform</h3>
-            <div class="modal-meta">
-                <div><strong>Client:</strong> Ford Motor Company</div>
-                <div><strong>Duration:</strong> August 2022 - Present</div>
-                <div><strong>Role:</strong> Senior UI/UX Designer</div>
-                <div><strong>Team Size:</strong> 8+ Designers, 20+ Engineers</div>
-            </div>
-
-            <div class="modal-section">
-                <h4>Challenge</h4>
-                <p class="modal-text">Ford's Governance, Risk, and Compliance (GRC) team needed a modern platform to manage organizational risk and compliance workflows. The system needed to serve different user types—risk officers, control owners, and compliance managers—each with different workflows, permissions, and information needs. The platform required integration with Camunda workflow engine and Snowflake data services while maintaining enterprise-grade reliability and accessibility.</p>
-            </div>
-
-            <div class="modal-section">
-                <h4>Approach</h4>
-                <p class="modal-text">I started by conducting stakeholder interviews with risk officers, control owners, and IT teams to understand workflow requirements, pain points, and data needs. Created user personas for each role type. Developed wireframes mapping complex workflows including RCSA assessments, issue tracking, control execution, and KRI monitoring.</p>
-                <p class="modal-text">Established a comprehensive design system with 80+ reusable components ensuring consistency across the platform. Implemented WCAG 2.1 AA accessibility standards from the beginning, including color contrast compliance, keyboard navigation, and screen reader support. Collaborated closely with engineering teams on design-to-code translation and technical feasibility.</p>
-            </div>
-
-            <div class="modal-section">
-                <h4>Key Deliverables</h4>
-                <ul class="outcome-list">
-                    <li>Role-based dashboards for RCSA, Issues & Action Management, Controls, and KRIs</li>
-                    <li>80+ reusable UI components and design patterns</li>
-                    <li>Design tokens for colors, spacing, typography, and interactive states</li>
-                    <li>Accessibility audit and WCAG 2.1 AA compliance documentation</li>
-                    <li>Responsive design supporting desktop, tablet, and mobile breakpoints</li>
-                    <li>Interactive prototypes demonstrating complex workflows</li>
-                    <li>Design system documentation and component library</li>
-                </ul>
-            </div>
-
-            <div class="modal-section">
-                <h4>Outcomes & Impact</h4>
-                <ul class="outcome-list">
-                    <li>Reduced design-to-development time by 40% through component reusability</li>
-                    <li>Achieved 100% WCAG 2.1 AA accessibility compliance</li>
-                    <li>Established consistent design language across all workflows and teams</li>
-                    <li>Improved platform usability enabling faster risk assessments and compliance tracking</li>
-                    <li>Design system scaled to support 8+ product teams and 20+ engineers</li>
-                    <li>Established design culture and accessibility awareness across teams</li>
-                </ul>
-            </div>
-
-            <div class="modal-section">
-                <h4>Key Learnings</h4>
-                <p class="modal-text">Enterprise GRC platforms require deep understanding of business workflows and regulatory requirements. Accessible design isn't an afterthought—it must be baked into design process from day one. Design systems are most valuable when they include comprehensive documentation and team education, not just component libraries.</p>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal2" class="modal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal(2)">&times;</button>
-            <h3 class="modal-title">Vanguard Investment Management Platform</h3>
-            <div class="modal-meta">
-                <div><strong>Client:</strong> Vanguard</div>
-                <div><strong>Duration:</strong> August 2018 - May 2021</div>
-                <div><strong>Role:</strong> UI/UX Designer</div>
-                <div><strong>Users:</strong> 2.5M+ Active Investors</div>
-            </div>
-
-            <div class="modal-section">
-                <h4>Challenge</h4>
-                <p class="modal-text">Vanguard's investment management platform needed redesign to improve user engagement and mobile experience. The platform serves millions of investors with varying investment knowledge and technical comfort. Users need to manage complex portfolios, execute trades, access market data, manage accounts, and track performance—all through intuitive interfaces that make complex financial information understandable.</p>
-            </div>
-
-            <div class="modal-section">
-                <h4>Approach</h4>
-                <p class="modal-text">Conducted extensive user research through interviews and usability testing with different investor segments. Created detailed user journeys mapping portfolio management, trading, account management, and performance tracking workflows. Designed responsive web interfaces for desktop and tablet, and native iOS/Android applications optimizing for mobile usage patterns and touch interactions.</p>
-                <p class="modal-text">Focused on making complex financial data accessible through clear information hierarchy, appropriate visualizations, and progressive disclosure of complexity. Established reusable design patterns for common interactions like buying/selling securities, viewing performance, and managing accounts.</p>
-            </div>
-
-            <div class="modal-section">
-                <h4>Key Deliverables</h4>
-                <ul class="outcome-list">
-                    <li>Portfolio management dashboard showing holdings, performance, and allocation</li>
-                    <li>Trading interface enabling buy/sell transactions with order review workflow</li>
-                    <li>Market data and research interface with real-time quotes and analytics</li>
-                    <li>Account management screens for personal information, funding, and transfers</li>
-                    <li>Native iOS and Android mobile applications with gesture-based interactions</li>
-                    <li>Responsive web design supporting multiple breakpoints and devices</li>
-                    <li>Design system with 60+ components and interaction patterns</li>
-                </ul>
-            </div>
-
-            <div class="modal-section">
-                <h4>Outcomes & Impact</h4>
-                <ul class="outcome-list">
-                    <li>Mobile app rating improved from 4.2 to 4.8/5 stars</li>
-                    <li>Mobile usage increased 45% post-redesign</li>
-                    <li>User engagement metrics improved 35% including time-in-app and feature usage</li>
-                    <li>Task completion rates improved across portfolio management and trading workflows</li>
-                    <li>Reduced customer support inquiries related to mobile app navigation</li>
-                    <li>Established design system enabling faster feature development</li>
-                </ul>
-            </div>
-
-            <div class="modal-section">
-                <h4>Key Learnings</h4>
-                <p class="modal-text">Financial applications require careful balance between feature completeness and interface simplicity. Mobile users have different needs and contexts than desktop users. Responsive design is about more than resizing layouts—it's about rethinking interactions for mobile constraints. Testing with real users in financial domain is critical given regulatory and trust considerations.</p>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal3" class="modal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal(3)">&times;</button>
-            <h3 class="modal-title">Enterprise Design System Architecture</h3>
-            <div class="modal-meta">
-                <div><strong>Scope:</strong> Multi-Platform Design System</div>
-                <div><strong>Team Impact:</strong> 8+ Product Teams, 20+ Engineers</div>
-                <div><strong>Role:</strong> Design System Architect</div>
-                <div><strong>Duration:</strong> 2022-2024</div>
-            </div>
-
-            <div class="modal-section">
-                <h4>Challenge</h4>
-                <p class="modal-text">Multiple product teams working independently were creating inconsistent UI patterns, duplicating components, and making design-to-development inefficient. Each team had their own color palettes, button styles, spacing conventions, and interaction patterns. This resulted in fragmented user experiences and wasted development effort rebuilding common components.</p>
-            </div>
-
-            <div class="modal-section">
-                <h4>Approach</h4>
-                <p class="modal-text">Audited existing UI patterns and components across all products. Identified 30+ commonly repeated components and established baseline design patterns. Created comprehensive design system with consistent token values for color, spacing, typography, and interactive states. Organized components using atomic design methodology enabling progressive complexity from atoms to organisms.</p>
-                <p class="modal-text">Developed extensive documentation including component specifications, usage guidelines, accessibility requirements, and code examples. Created living documentation in Figma enabling teams to access latest component specifications and contribute improvements. Established governance process for component evolution and versioning.</p>
-            </div>
-
-            <div class="modal-section">
-                <h4>Key Deliverables</h4>
-                <ul class="outcome-list">
-                    <li>80+ reusable UI components (buttons, inputs, cards, tables, modals, etc.)</li>
-                    <li>Design tokens for colors, spacing, typography, shadows, and animations</li>
-                    <li>Figma component library with variants for different states</li>
-                    <li>Component documentation with usage guidelines and code examples</li>
-                    <li>Accessibility specifications for each component type</li>
-                    <li>Responsive design patterns and breakpoint guidelines</li>
-                    <li>Design system governance and contribution process</li>
-                </ul>
-            </div>
-
-            <div class="modal-section">
-                <h4>Outcomes & Impact</h4>
-                <ul class="outcome-list">
-                    <li>Reduced design-to-development time by 40% through component reusability</li>
-                    <li>Eliminated duplicate component development across teams</li>
-                    <li>Established consistent user experience across all products</li>
-                    <li>Improved design system adoption rate to 85% across teams</li>
-                    <li>Reduced maintenance burden through centralized component management</li>
-                    <li>Enabled faster onboarding for new designers joining teams</li>
-                    <li>Created foundation for future product scaling and international expansion</li>
-                </ul>
-            </div>
-
-            <div class="modal-section">
-                <h4>Key Learnings</h4>
-                <p class="modal-text">Design systems succeed when teams see them as enabling their work, not constraining it. Comprehensive documentation is as important as the components themselves. Design system is living artifact—it must evolve with products and team needs. Governance and contribution process are critical for system health and adoption.</p>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal4" class="modal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal(4)">&times;</button>
-            <h3 class="modal-title">Mobile-Native iOS and Android Application Design</h3>
-            <div class="modal-meta">
-                <div><strong>Platforms:</strong> iOS and Android</div>
-                <div><strong>Users:</strong> 2.5M+ Investors</div>
-                <div><strong>App Rating:</strong> 4.8/5 Stars</div>
-                <div><strong>Focus:</strong> Native Experience Design</div>
-            </div>
-
-            <div class="modal-section">
-                <h4>Challenge</h4>
-                <p class="modal-text">Users expect native mobile experiences that leverage platform conventions, gestures, and design patterns. iOS and Android have different interaction paradigms, navigation patterns, and design languages. Creating platform-native experiences while maintaining brand consistency and feature parity across platforms is challenging.</p>
-            </div>
-
-            <div class="modal-section">
-                <h4>Approach</h4>
-                <p class="modal-text">Studied Apple Human Interface Guidelines and Google Material Design 3 to understand platform conventions and user expectations. Designed separate but cohesive experiences for iOS and Android leveraging native navigation patterns (tab bars on iOS, bottom navigation on Android), interaction gestures, and visual conventions specific to each platform.</p>
-                <p class="modal-text">Optimized for touch interactions with appropriate touch targets (minimum 44x44px), gesture support (swipe, long-press, pinch-zoom), and mobile-specific constraints like smaller screens and variable connectivity. Tested across multiple device sizes including phones and tablets, and iOS/Android versions.</p>
-            </div>
-
-            <div class="modal-section">
-                <h4>Key Deliverables</h4>
-                <ul class="outcome-list">
-                    <li>iOS native application following HIG with tab-based navigation</li>
-                    <li>Android native application following Material Design 3</li>
-                    <li>Platform-specific gesture interactions and animations</li>
-                    <li>Responsive layouts supporting phones (5.5" to 6.7") and tablets</li>
-                    <li>Native mobile components (pickers, date selectors, bottom sheets)</li>
-                    <li>Mobile-specific onboarding and permission request flows</li>
-                    <li>Offline capability and progressive disclosure of features</li>
-                </ul>
-            </div>
-
-            <div class="modal-section">
-                <h4>Outcomes & Impact</h4>
-                <ul class="outcome-list">
-                    <li>iOS app rating: 4.9/5 stars, Android app rating: 4.7/5 stars (4.8 average)</li>
-                    <li>Mobile usage increased 45% post-launch</li>
-                    <li>User retention improved 30% for mobile-first users</li>
-                    <li>Mobile feature adoption rates consistently above 70%</li>
-                    <li>Reduced crash reports and support issues related to mobile experience</li>
-                    <li>Mobile revenue contributed 35% of platform total by year 2</li>
-                </ul>
-            </div>
-
-            <div class="modal-section">
-                <h4>Key Learnings</h4>
-                <p class="modal-text">Platform-native experiences matter—users notice when apps don't follow platform conventions. Touch optimization is critical for mobile usability. Testing on actual devices with various OS versions reveals issues that desktop testing misses. Mobile isn't just a smaller version of desktop—it requires rethinking workflows and information architecture for mobile contexts.</p>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal5" class="modal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal(5)">&times;</button>
-            <h3 class="modal-title">WCAG 2.1 AA Accessibility Implementation</h3>
-            <div class="modal-meta">
-                <div><strong>Standard:</strong> WCAG 2.1 AA</div>
-                <div><strong>Coverage:</strong> 100% Compliance</div>
-                <div><strong>Platforms:</strong> Web and Mobile</div>
-                <div><strong>Focus:</strong> Inclusive Design</div>
-            </div>
-
-            <div class="modal-section">
-                <h4>Challenge</h4>
-                <p class="modal-text">Creating truly accessible digital interfaces requires understanding diverse user needs and disabilities including visual impairments (blindness, low vision, color blindness), hearing impairments, motor impairments, and cognitive disabilities. Accessibility standards are detailed and technical. Many designers treat accessibility as a compliance checkbox rather than a design principle.</p>
-            </div>
-
-            <div class="modal-section">
-                <h4>Approach</h4>
-                <p class="modal-text">Embedded accessibility thinking into design process from start, not as final review step. For each design, I considered: color contrast for users with color blindness or low vision, keyboard navigation for users with motor impairments, semantic structure for users relying on screen readers, appropriate focus indicators for keyboard users, and clear error messages for all users.</p>
-                <p class="modal-text">Conducted accessibility audits using WCAG 2.1 AA checklist and tools like WAVE and Lighthouse. Tested with assistive technologies including screen readers (NVDA, JAWS) and keyboard-only navigation. Educated design and engineering teams on accessibility best practices through workshops and documentation.</p>
-            </div>
-
-            <div class="modal-section">
-                <h4>Key Deliverables</h4>
-                <ul class="outcome-list">
-                    <li>Color palettes meeting WCAG AA color contrast ratios (4.5:1 for normal text)</li>
-                    <li>Semantic HTML with proper heading hierarchy and landmark regions</li>
-                    <li>Keyboard navigation support for all interactive elements</li>
-                    <li>Focus indicators visible on all focusable elements</li>
-                    <li>Form labels and instructions for accessibility with screen readers</li>
-                    <li>Error messages clear and visible with visual and textual indicators</li>
-                    <li>Accessible data visualizations and complex UI patterns</li>
-                    <li>Accessibility documentation and team training materials</li>
-                </ul>
-            </div>
-
-            <div class="modal-section">
-                <h4>Outcomes & Impact</h4>
-                <ul class="outcome-list">
-                    <li>Achieved 100% WCAG 2.1 AA compliance across all platforms</li>
-                    <li>Expanded addressable user base by making products accessible to users with disabilities</li>
-                    <li>Improved usability for all users (good accessibility often improves general usability)</li>
-                    <li>Eliminated legal/regulatory risk related to accessibility non-compliance</li>
-                    <li>Established accessibility culture where teams proactively consider accessibility</li>
-                    <li>Reduced support issues related to accessibility concerns</li>
-                    <li>Improved team skill and awareness around inclusive design</li>
-                </ul>
-            </div>
-
-            <div class="modal-section">
-                <h4>Key Learnings</h4>
-                <p class="modal-text">Accessibility is not an afterthought or compliance burden—it's integral to good design. Accessible design benefits everyone, not just users with disabilities (captions help users in noisy environments, keyboard navigation helps power users, clear information hierarchy helps all users understand complex interfaces). Accessibility requires understanding real user needs, not just following checklist. Team education is essential—accessibility responsibility extends beyond designers to product managers and engineers.</p>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function openModal(caseStudyNum) {
-            document.getElementById('modal' + caseStudyNum).classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModal(caseStudyNum) {
-            document.getElementById('modal' + caseStudyNum).classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.classList.remove('active');
-                document.body.style.overflow = 'auto';
-            }
-        }
-
-        // Smooth scroll navigation
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        });
-    </script>
 </body>
 </html>
